@@ -1,0 +1,2 @@
+#include "singletonadaptation.h"
+

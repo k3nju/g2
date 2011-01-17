@@ -1,0 +1,16 @@
+#! /usr/bin/python
+
+unused = """
+testTargets = [
+"main.cpp",
+];
+libs = [ "g2", "pthread", "rt" ];
+libpath = [ "../build/" ];
+
+Import( "testEnv" );
+testEnv.Program( "test",
+				 testTargets,
+				 LIBS=libs,
+				 LIBPATH=libpath,
+				 duplicate=False );
+"""

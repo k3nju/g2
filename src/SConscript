@@ -1,0 +1,69 @@
+#! /usr/bin/python
+
+srcTargets = [
+"range.cpp",
+"threadpool.cpp",
+"signalwaitbase.cpp",
+"memorypool.cpp",
+"debugutility.cpp",
+"pointerreferencemanagement.cpp",
+"mutexlock.cpp",
+"exception.cpp",
+"criticalscope.cpp",
+"daemon.cpp",
+"eventfd.cpp",
+"networkexception.cpp",
+"conditionvalue.cpp",
+"epollevent.cpp",
+"defaultpolicy.cpp",
+"any.cpp",
+"sigset.cpp",
+"threadsafequeue.cpp",
+"signalfd.cpp",
+"scopedpointer.cpp",
+"threadcontrolstate.cpp",
+"epoll.cpp",
+"eventtype.cpp",
+"threading.cpp",
+"socketheaders.cpp",
+"sockethashmap.cpp",
+"netutility.cpp",
+"tcpsocket.cpp",
+"udpsocket.cpp",
+"syslog.cpp",
+"property.cpp",
+"patternexception.cpp",
+"threadsafeflag.cpp",
+"scopedoperation.cpp",
+"singletonadaptation.cpp",
+"sharedobject.cpp",
+"uncopyable.cpp",
+"singleton.cpp",
+"nulllock.cpp",
+"socketbase.cpp",
+"addrinfo.cpp",
+"nameinfo.cpp",
+"utility.cpp",
+"timerfd.cpp",
+"referencemanagement.cpp",
+"copyable.cpp",
+"readwritelock.cpp",
+"endpoint.cpp",
+"randomint.cpp",
+"inotify.cpp",
+"buffer.cpp",
+];
+
+unused = [
+	"deserialization.cpp",
+	"serialization.cpp",
+	"serializationtype.cpp",
+	"networkcontainer.cpp",
+	"iodispatch.cpp",
+	];
+
+Import( "srcEnv" );
+srcEnv.StaticLibrary( "libg2", srcTargets );
+
+
+

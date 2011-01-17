@@ -1,0 +1,30 @@
+#ifndef GENSIN__event_typeH
+#define GENSIN__event_typeH
+
+#include <sys/epoll.h>
+
+namespace g2
+	{
+	namespace event_type
+		{
+		enum TYPE
+			{
+			ACCEPT = EPOLLIN,
+			CONNECT = EPOLLOUT,
+			READ = EPOLLIN,
+			WRITE = EPOLLOUT,
+
+			ONE_SHOT = EPOLLONESHOT,
+			ONE_SHOT_ACCEPT = EPOLLONESHOT | EPOLLIN,
+			ONE_SHOT_CONNECT = EPOLLONESHOT | EPOLLOUT,
+			ONE_SHOT_READ = EPOLLONESHOT | EPOLLIN,
+			ONE_SHOT_WRITE = EPOLLONESHOT | EPOLLOUT,
+
+			ERROR = EPOLLERR,
+			HUNGUP = EPOLLHUP,
+			ERRORS = EPOLLERR | EPOLLHUP
+			};
+		}
+	}
+
+#endif
