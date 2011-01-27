@@ -2,7 +2,6 @@
 
 srcTargets = [
 "range.cpp",
-"threadpool.cpp",
 "signalwaitbase.cpp",
 "memorypool.cpp",
 "debugutility.cpp",
@@ -60,6 +59,7 @@ unused = [
 	"serializationtype.cpp",
 	"networkcontainer.cpp",
 	"iodispatch.cpp",
+	"threadpool.cpp",
 	];
 
 Import( "srcEnv" );
