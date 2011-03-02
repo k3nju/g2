@@ -1,30 +1,29 @@
-#include "threadsafeflag.h"
-#include "criticalscope.h"
-#include <stdio.h>
+#include "flag.h"
+#include "../criticalscope.h"
 
 namespace g2
 	{
 	//-----------------------------------------------------------------------------------------//
-	ThreadSafeFlag::ThreadSafeFlag( bool flag )
+	Flag::Flag( bool flag )
 		:flag_( flag ),
 		 lock_()
 		{
 		}
 	
 	//-----------------------------------------------------------------------------------------//
-	ThreadSafeFlag::ThreadSafeFlag()
+	Flag::Flag()
 		:flag_( false ),
 		 lock_()
 		{
 		}
 
 	//-----------------------------------------------------------------------------------------//
-	ThreadSafeFlag::~ThreadSafeFlag()
+	Flag::~Flag()
 		{
 		}
 
 	//-----------------------------------------------------------------------------------------//
-	void ThreadSafeFlag::Set( bool flag )
+	void Flag::Set( bool flag )
 		{
 		CriticalScope< MutexLock > Locked( lock_ );
 		
@@ -32,13 +31,13 @@ namespace g2
 		}
 
 	//-----------------------------------------------------------------------------------------//
-	bool ThreadSafeFlag::Get() const
+	bool Flag::Get() const
 		{
-		return static_cast< const ThreadSafeFlag* >( this )->Get();
+		return static_cast< const Flag* >( this )->Get();
 		}
 	
 	//-----------------------------------------------------------------------------------------//
-	bool ThreadSafeFlag::Get()
+	bool Flag::Get()
 		{
 		CriticalScope< MutexLock > Locked( lock_ );
 		
@@ -46,7 +45,7 @@ namespace g2
 		}
 
 	//-----------------------------------------------------------------------------------------//
-	bool ThreadSafeFlag::operator = ( bool flag )
+	bool Flag::operator = ( bool flag )
 		{
 		CriticalScope< MutexLock > Locked( lock_ );
 		
@@ -54,7 +53,7 @@ namespace g2
 		}
 
 	//-----------------------------------------------------------------------------------------//
-	ThreadSafeFlag::operator bool ()
+	Flag::operator bool ()
 		{
 		CriticalScope< MutexLock > Locked( lock_ );
 		
