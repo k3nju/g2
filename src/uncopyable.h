@@ -3,17 +3,19 @@
 namespace g2
 	{
 	//-----------------------------------------------------------------------------------------//
+	template < class Derived >
 	class Uncopyable
 		{
 		public:
-			Uncopyable();
-			~Uncopyable();
+			Uncopyable(){};
+			~Uncopyable(){};
 			
 		private:
 			Uncopyable( const Uncopyable & );
 			Uncopyable& operator = ( const Uncopyable & );
 		};
-		//-----------------------------------------------------------------------------------------//
+	
+	//-----------------------------------------------------------------------------------------//
 	// Another method.
 #define G2_MARK_UNCOPYABLE( className )			\
 	className( const className& );				\

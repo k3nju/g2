@@ -6,7 +6,7 @@
 
 namespace g2
 	{
-	class SignalFD :private g2::Uncopyable
+	class SignalFD :private g2::Uncopyable< SignalFD >
 		{
 		public:
 			SignalFD();

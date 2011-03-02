@@ -9,7 +9,7 @@ namespace g2
 // this may be dangerous
 // #define Util Utility
 	
-	class Utility :private g2::Uncopyable
+	class Utility :private g2::Uncopyable< Utility >
 		{
 		public:
 			template < class T >

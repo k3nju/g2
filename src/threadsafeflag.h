@@ -5,7 +5,7 @@
 
 namespace g2
 	{
-	class ThreadSafeFlag :private g2::Uncopyable
+	class ThreadSafeFlag :private g2::Uncopyable< ThreadSafeFlag >
 		{
 		public:
 			ThreadSafeFlag( bool flag );			

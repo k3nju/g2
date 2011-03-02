@@ -11,7 +11,7 @@
 namespace g2
 	{
 	template < class Type, class LockPolicy = g2::MutexLock >
-	class MemoryPool :private g2::Uncopyable
+	class MemoryPool :private g2::Uncopyable< MemoryPool< Type, LockPolicy > >
 		{
 			typedef MemoryPool< Type, LockPolicy > self_t;
 

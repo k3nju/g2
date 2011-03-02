@@ -7,7 +7,7 @@
 
 namespace g2
 	{
-	class TimerFD :private g2::Uncopyable
+	class TimerFD :private g2::Uncopyable< TimerFD >
 		{
 		public:
 			TimerFD();

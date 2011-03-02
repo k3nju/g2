@@ -8,7 +8,7 @@ namespace g2
 	{
 	// this class must be instantiated on heap
 	template < class LockingPolicy >
-	class PointerReferenceManagement :private g2::Uncopyable
+	class PointerReferenceManagement :private g2::Uncopyable< PointerReferenceManagement< LockingPolicy > >
 		{
 		public:
 			static PointerReferenceManagement< LockingPolicy >* Create( void * const pointer );

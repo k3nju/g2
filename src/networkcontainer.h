@@ -152,7 +152,7 @@ namespace g2
 // * 10/3/15 this mark is currently unused.
 #define GENSIN__SERIALIZABLE typedef char gensin_serializable_t;
 
-	class OutputNetworkContainer :private g2::Uncopyable
+	class OutputNetworkContainer :private g2::Uncopyable< OutputNetworkContainer >
 		{
 			friend class g2::ScopedOperation< OutputNetworkContainer > ;
 			
@@ -195,7 +195,7 @@ namespace g2
 
 
 	//-----------------------------------------------------------------------------------------//
-	class InputNetworkContainer :private g2::Uncopyable
+	class InputNetworkContainer :private g2::Uncopyable< InputNetworkContainer >
 		{
 		public:
 			explicit InputNetworkContainer( g2::Buffer &buf );

@@ -13,7 +13,7 @@ namespace g2
 	{
 	namespace st = g2::serialization_type;
 	
-	class Serialization :private g2::Uncopyable
+	class Serialization :private g2::Uncopyable< Serialization >
 		{
 		public:
 			typedef size_t pad_t;

@@ -10,7 +10,7 @@ namespace g2
 	{
 	using namespace std;
 
-	class NetUtility :private g2::Uncopyable
+	class NetUtility :private g2::Uncopyable< NetUtility >
 		{
 		public:
 			static void SetSockAddrIn( struct sockaddr_in *skadIn, const char *ip, u_short port );

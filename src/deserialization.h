@@ -14,7 +14,7 @@ namespace g2
 	{
 	namespace st = g2::serialization_type;
 	
-	class Deserialization :private g2::Uncopyable
+	class Deserialization :private g2::Uncopyable< Deserialization >
 		{
 		public:
 			explicit Deserialization( g2::Buffer &buf );

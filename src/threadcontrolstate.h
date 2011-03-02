@@ -17,7 +17,7 @@ namespace g2
 		}
 	
 	template < class T >
-	class ThreadControlState :private g2::Uncopyable
+	class ThreadControlState :private g2::Uncopyable< ThreadControlState< T > >
 		{
 		public:
 			typedef std::queue< T > queue_t;

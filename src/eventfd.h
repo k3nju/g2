@@ -6,7 +6,7 @@
 
 namespace g2
 	{
-	class EventFD :private g2::Uncopyable
+	class EventFD :private g2::Uncopyable< EventFD >
 		{
 		public:
 			EventFD( unsigned int initial_value );

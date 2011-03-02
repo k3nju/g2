@@ -1,9 +1,7 @@
 #ifndef GENSIN_DaemonH
 #define GENSIN_DaemonH
 
-//#include "uncopyable.h"
-
-namespace g2 //:private g2::Uncopyable
+namespace g2
 	{
 	class Daemon
 		{

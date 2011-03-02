@@ -21,7 +21,7 @@ namespace g2
 		}
 
 	//-----------------------------------------------------------------------------------------//
-	class Threading :private g2::Uncopyable
+	class Threading :private g2::Uncopyable< Threading >
 		{
 		public:
 			Threading();

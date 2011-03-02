@@ -9,7 +9,7 @@ namespace g2
 	using namespace std;
 		
 	template < class T >
-	class SocketHashMap :private g2::Uncopyable
+	class SocketHashMap :private g2::Uncopyable< SocketHashMap< T > >
 		{
 		public:
 			SocketHashMap();

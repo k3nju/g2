@@ -12,7 +12,7 @@
 namespace g2
 	{
 	template < class StreamImpl >
-	class SocketBase :private g2::Uncopyable
+	class SocketBase :private g2::Uncopyable< SocketBase< StreamImpl > >
 		{
 		public:
 			typedef SocketBase< StreamImpl > self_t;

@@ -5,7 +5,7 @@
 namespace g2
 	{
 	template < class T >
-	class ScopedPointer :private g2::Uncopyable
+	class ScopedPointer :private g2::Uncopyable< ScopedPointer< T > >
 		{
 		public:
 			explicit ScopedPointer( T * const pointer );

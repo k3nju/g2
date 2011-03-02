@@ -8,7 +8,7 @@
 
 namespace g2
 	{
-	class NameInfo :private g2::Uncopyable
+	class NameInfo :private g2::Uncopyable< NameInfo >
 		{
 		public:
 			NameInfo( const struct sockaddr *sa, socklen_t salen );

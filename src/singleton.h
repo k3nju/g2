@@ -18,7 +18,7 @@ namespace g2
 		template < class > class CreationPolicy = default_policy::CreationPolicy,
 		template < class > class DestructionPolicy = default_policy::DestructionPolicy
 		>
-	class Singleton :private g2::Uncopyable
+	class Singleton :private g2::Uncopyable< Singleton< Product, CreationPolicy, DestructionPolicy > >
 		{
 		public:
 			static Product* Instance();

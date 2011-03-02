@@ -7,7 +7,7 @@
 
 namespace g2
 	{
-	class AddrInfo :private g2::Uncopyable
+	class AddrInfo :private g2::Uncopyable< AddrInfo >
 		{
 		public:
 			enum cs_type

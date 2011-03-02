@@ -7,7 +7,7 @@
 namespace g2
 	{
 	template < size_t Size >
-	class EpollEvent :private g2::Uncopyable
+	class EpollEvent :private g2::Uncopyable< EpollEvent< Size > >
 		{
 		public:
 			EpollEvent();

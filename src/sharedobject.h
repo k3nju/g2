@@ -8,7 +8,7 @@ namespace g2
 	{
 	using namespace std;
 	
-	class SharedObject :private g2::Uncopyable
+	class SharedObject :private g2::Uncopyable< SharedObject >
 		{
 		public:
 			SharedObject();

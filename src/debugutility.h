@@ -17,7 +17,7 @@ namespace g2
 
 	class Buffer;
 	
-	class DebugUtility :private g2::Uncopyable
+	class DebugUtility :private g2::Uncopyable< DebugUtility >
 		{
 		public:
 			//-----------------------------------------------------------------------------------------//

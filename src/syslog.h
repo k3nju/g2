@@ -36,7 +36,7 @@ namespace g2
 	g2::ScopedSysLog::End();
 
 	
-	class SysLog :private g2::Uncopyable
+	class SysLog :private g2::Uncopyable< SysLog >
 		{
 		public:
 			SysLog( const char* ident );

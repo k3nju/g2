@@ -10,7 +10,7 @@ namespace g2
 	{
 	using namespace std;
 
-	template < class T > class ThreadSafeQueue :private g2::Uncopyable
+	template < class T > class ThreadSafeQueue :private g2::Uncopyable< ThreadSafeQueue< T > >
 		{
 		public:
 			typedef T data_t;

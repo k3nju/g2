@@ -5,7 +5,7 @@
 namespace g2
 	{
 	template < class OperationType >
-	class ScopedOperation :private g2::Uncopyable
+	class ScopedOperation :private g2::Uncopyable< ScopedOperation< OperationType > >
 		{
 		public:
 			ScopedOperation( OperationType &op );

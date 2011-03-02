@@ -6,7 +6,7 @@
 
 namespace g2
 	{
-	class BinaryData :private g2::Uncopyable
+	class BinaryData :private g2::Uncopyable< BinaryData >
 		{
 		public:
 			BinaryData( g2::Buffer &buf );

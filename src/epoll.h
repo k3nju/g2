@@ -9,7 +9,7 @@ namespace g2
 	{
 	using namespace std;
 
-	class Epoll :private g2::Uncopyable
+	class Epoll :private g2::Uncopyable< Epoll >
 		{
 		public:
 			explicit Epoll( unsigned int size = 1024 );
