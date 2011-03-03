@@ -10,7 +10,7 @@ testEnv = Environment( CXXFLAGS = cxxflags );
 Export( "testEnv" );
 
 def Build():
-	srcEnv.SConscript( "src/SConscript", build_dir="./build" );	
+	srcEnv.SConscript( "src/SConscript", variant_dir="./build" );	
 	if "test" in COMMAND_LINE_TARGETS:
 		testEnv.SConscript( "test/SConscript" );
 		

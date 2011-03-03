@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../mutexlock.h"
-#include "../uncopyable.h"
+#include "mutexlock.h"
+#include "uncopyable.h"
 
 namespace g2
 	{

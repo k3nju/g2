@@ -51,16 +51,14 @@ namespace g2
 	//-----------------------------------------------------------------------------------------//
 	template < class StreamImpl >
 	SocketBase< StreamImpl >::SocketBase()
-		:Uncopyable(),
-		 socket_( -1 )
+		:socket_( -1 )
 		{
 		}
 
 	//-----------------------------------------------------------------------------------------//
 	template < class StreamImpl >
 	SocketBase< StreamImpl >::SocketBase( int socket )
-		:Uncopyable(),
-		 socket_( socket )
+		:socket_( socket )
 		{
 		}
 

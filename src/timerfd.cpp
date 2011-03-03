@@ -7,8 +7,7 @@ namespace g2
 	{
 	//-----------------------------------------------------------------------------------------//
 	TimerFD::TimerFD()
-		:g2::Uncopyable(),
-		 fd_( -1 )
+		:fd_( -1 )
 		{
 		fd_ = timerfd_create( CLOCK_REALTIME, 0 );
 		if( fd_ == -1 )

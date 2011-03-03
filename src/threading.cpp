@@ -7,8 +7,7 @@ namespace g2
 	{
 	//-----------------------------------------------------------------------------------------//
 	Threading::Threading()
-		:Uncopyable(),
-		 resultCode_( -1 ),
+		:resultCode_( -1 ),
 		 isDetached_( false ),
 		 isJoined_( true ),
 		 threadId_( 0 ),

@@ -1,5 +1,6 @@
 #include "flag.h"
-#include "../criticalscope.h"
+#include "criticalscope.h"
+#include <stdio.h>
 
 namespace g2
 	{

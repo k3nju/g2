@@ -7,7 +7,7 @@
 namespace g2
 	{
 	template < class LockPolicy = g2::MutexLock >
-	class CriticalScope :private g2::Uncopyable
+	class CriticalScope :private g2::Uncopyable< CriticalScope< LockPolicy > >
 		{
 		public:
 			explicit CriticalScope( LockPolicy &lock );

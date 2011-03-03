@@ -25,7 +25,7 @@ namespace g2
 			static void Dump( const g2::Buffer &buf );
 
 			//-----------------------------------------------------------------------------------------//
-			class ObjectTrace :private g2::Uncopyable
+			class ObjectTrace :private g2::Uncopyable< ObjectTrace >
 				{
 				public:
 					static size_t Add( const void *object );
@@ -40,7 +40,7 @@ namespace g2
 				};
 
 			//-----------------------------------------------------------------------------------------//
-			class TimeCount :private g2::Uncopyable
+			class TimeCount :private g2::Uncopyable< TimeCount >
 				{
 				public:
 					TimeCount();
@@ -60,7 +60,7 @@ namespace g2
 
 			//-----------------------------------------------------------------------------------------//
 			template < class Impl >
-			class ScopedDebugPrint :private g2::Uncopyable
+			class ScopedDebugPrint :private g2::Uncopyable< ScopedDebugPrint< Impl > >
 				{
 				public:
 					ScopedDebugPrint( const char *msg );
