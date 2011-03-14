@@ -25,7 +25,7 @@ namespace g2
 			return false;
 			}
 		
-		worker->SetArgv( 
+		
 		pthread_t tmp = 0;
 		
 		

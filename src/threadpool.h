@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdint.h>
 #include <map>
 #include <pthread.h>
 #include <boost/shared_ptr.hpp>
@@ -14,12 +15,23 @@ namespace g2
 	class ThreadPool;
 	
 	//-----------------------------------------------------------------------------------------//
-	struct ThreadArgs
+	class ThreadArgs
 		{
-			void *argv;
-			ThreadPool *threadPool;
+		public:
+			ThreadArgs( uint32_t &status, void *argv )
+				:status_( status )
+				{
+				}
+			
+			inline void SetStatus( uint32_t newStatus ){ while( __sync_bool_compare_and_swap( &status_, &status_, newStatus ) == false ); }
+			inline bool GetStatus(){ return __sync_fetch_and_or( &status_, status_ );  }
+			inline void* GetArgv() const { return argv_; }
+			
+		private:
+			uint32_t &status_;
+			void *argv_;
 		};
-	
+
 	//-----------------------------------------------------------------------------------------//
 	class ThreadPool
 		{
@@ -36,15 +48,10 @@ namespace g2
 			bool Add( worker_ptr_t worker, void *argv, pthread_t *tid );
 			void Join();
 			
-			inline void Stop(){ __sync_fetch_and_or( &stop_, true ); }
-			inline bool IsStopped() const { return __sync_fetch_and_and( &stop_, true ); }
-			
 		private:
-			
-			
 			thread_map_t threads_;
 			g2::MutexLock threadsLock_;
 			
-			bool stop_;
+			int stop_;
 		};
 	}
