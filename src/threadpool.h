@@ -37,11 +37,13 @@ namespace g2
 		{
 			G2_MARK_UNCOPYABLE( self_t );
 
-			typedef boost::shared_ptr< g2::Threading > worker_ptr_t;
+			typedef std::pair< worker_ptr_t,  > entity_t;
 			typedef std::map< pthread_t, worker_ptr_t > thread_map_t;
 			typedef g2::CriticalScope< g2::MutexLock > critical_scope_t;
 			
 		public:
+			typedef boost::shared_ptr< g2::Threading > worker_ptr_t;
+			
 			ThreadPool();
 			~ThreadPool();
 

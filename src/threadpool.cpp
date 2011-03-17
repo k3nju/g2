@@ -24,12 +24,10 @@ namespace g2
 			{
 			return false;
 			}
-		
-		
-		pthread_t tmp = 0;
-		
-		
+
+		worker->Create();
 		pthread_t tid = worker->GetThreadID();
+		
 		critical_scope_t locked( threadsLock_ );
 		threads_.insert( std::make_pair( newTid, worker ) );
 
