@@ -3,8 +3,8 @@
 import os
 import sys;
 
-libpath = "/home/kizi/devel/g2/build/";
-srcpath = "/home/kizi/devel/g2/src/";
+libpath = "/home/kj/devel/g2/build/";
+srcpath = "/home/kj/devel/g2/src/";
 params = "-lpthread -L%s -lg2 -I%s" % ( libpath, srcpath );
 
 if __name__ == "__main__":
