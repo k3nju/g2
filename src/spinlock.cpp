@@ -1,4 +1,5 @@
 #include "spinlock.h"
+#include <errno.h>
 #include "exception.h"
 
 namespace g2
@@ -43,7 +44,7 @@ namespace g2
 			{
 			return true;
 			}
-		else if( result = EBUSY )
+		else if( result == EBUSY )
 			{
 			return false;
 			}
