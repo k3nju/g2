@@ -13,8 +13,8 @@ namespace g2
 		 threadId_( 0 ),
 		 sigset_()
 		{
-		thArgv_.self = this;
-		thArgv_.argv = NULL;
+		thArgs_.self = this;
+		thArgs_.args = NULL;
 		sigset_.Fill();
 		}
 	
@@ -36,7 +36,7 @@ namespace g2
 
 		int result = pthread_create( &threadId_, attr,
 									 static_cast< void* (*)(void*) >( &Threading::ThreadRoutine ),
-									 static_cast< void* >( &thArgv_ ) );
+									 static_cast< void* >( &thArgs_ ) );
 		
 		if( result != 0 )
 			{
@@ -100,9 +100,9 @@ namespace g2
 		}
 
 	//-----------------------------------------------------------------------------------------//
-	void Threading::SetArgv( void *argv )
+	void Threading::SetArgs( void *args )
 		{
-		thArgv_.argv = argv;
+		thArgs_.args = args;
 		}
 
 	//-----------------------------------------------------------------------------------------//
@@ -130,20 +130,19 @@ namespace g2
 		}
 
 	//-----------------------------------------------------------------------------------------//
-	void* Threading::ThreadRoutine( void *argv )
+	void* Threading::ThreadRoutine( void *args )
 		{
-		assert( argv != NULL && "argv is NULL" );
-		detail::ThreadingArgvType *thArgv = static_cast< detail::ThreadingArgvType* >( argv );
-		Threading *self = thArgv->self;
+		assert( args != NULL && "args is NULL" );
+		detail::ThreadingArgsType *thArgs = static_cast< detail::ThreadingArgsType* >( args );
+		Threading *self = thArgs->self;
 		assert( self != NULL && "self is NULL" );
 
 		// TODO: is AddMask correct ? SetMask?
 		self->GetSigset().AddMask();
-		self->resultCode_ = self->Thread( thArgv->argv );
+		self->resultCode_ = self->Thread( thArgs->args );
 		
 		__sync_bool_compare_and_swap( &( self->isRunning_ ), true, false );
-
-
+		
 		pthread_exit( NULL );
 		
 		return NULL;
@@ -167,8 +166,8 @@ namespace g2
 		}
 	
 	//-----------------------------------------------------------------------------------------//
-	int TaskThreading::Thread( void *argv )
+	int TaskThreading::Thread( void *args )
 		{
-		return ThreadFunc_( argv );
+		return ThreadFunc_( args );
 		}	
 	}

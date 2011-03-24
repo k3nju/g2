@@ -16,8 +16,8 @@ namespace g2
 		typedef struct ThreadingArgument
 			{
 				Threading *self;
-				void *argv;
-			} ThreadingArgvType;
+				void *args;
+			} ThreadingArgsType;
 		}
 
 	//-----------------------------------------------------------------------------------------//
@@ -33,7 +33,7 @@ namespace g2
 			int GetResultCode() const;
 			void Detach();
 
-			void SetArgv( void *argv );
+			void SetArgs( void *args );
 			
 			pthread_t GetThreadID() const;
 			pthread_t GetThreadID();
@@ -42,11 +42,11 @@ namespace g2
 			g2::Sigset& GetSigset();
 			
 		protected:
-			virtual int Thread( void *argv ) = 0;
+			virtual int Thread( void *args ) = 0;
 			void EnableCancel( bool flag );
 			
 		private:
-			static void* ThreadRoutine( void *argv );
+			static void* ThreadRoutine( void *args );
 
 			int resultCode_;
 			bool isDetached_;
@@ -54,7 +54,7 @@ namespace g2
 			mutable bool isRunning_;
 			pthread_t threadId_;
 			g2::Sigset sigset_;
-			detail::ThreadingArgvType thArgv_;
+			detail::ThreadingArgsType thArgs_;
 		};
 
 	//-----------------------------------------------------------------------------------------//
@@ -69,7 +69,7 @@ namespace g2
 			void SetThreadFunction( thread_func_t &thread_func );
 
 		private:
-			virtual int Thread( void *argv );
+			virtual int Thread( void *args );
 			
 			thread_func_t ThreadFunc_;			
 		};
@@ -136,7 +136,7 @@ int GutsEntryThreadingTest( int, char** )
 	
 	TaskThreading TestThread( d );
 	TestThread.GetSigset().Fill();
-	TestThread.SetArgv( reinterpret_cast< void* >( 0xff ) );
+	TestThread.SetArgs( reinterpret_cast< void* >( 0xff ) );
 	TestThread.Create();
 	cv.Signal();
 	puts( "signaled" );
