@@ -35,11 +35,11 @@ namespace g2
 				{
 				}
 
-			void Stop(){ __sync_bool_compare_and_swap( &run_, true, false ); }
-			bool IsRunnable() { __sync_fetch_and_and( &run_, true ); }
+			inline void Stop(){ __sync_bool_compare_and_swap( &run_, true, false ); }
+			inline bool IsRunnable(){ __sync_fetch_and_and( &run_, true ); }
 			
-			void* GetArgs() const { return args_; }
-			IThreadPool* GetThreadPool() const { return threadPool_; }
+			inline void* GetArgs() const { return args_; }
+			inline IThreadPool* GetThreadPool() const { return threadPool_; }
 			
 		private:
 			IThreadPool *threadPool_;
@@ -63,12 +63,8 @@ namespace g2
 						{
 						SetArgs( &args_ );
 						}
-					~PoolableThreading()
-						{
-						puts( "[*] dtor" );
-						}
-
-					void Stop(){ args_.Stop(); }
+					
+					inline void Stop(){ args_.Stop(); }
 					
 				private:
 					WorkerArgs args_;
@@ -127,13 +123,15 @@ namespace g2
 	void ThreadPool< Worker >::Remove( pthread_t tid )
 		{
 		critical_scope_t locked( threadsLock_ );
-		if( threads_.empty() )
+		if( threads_.empty() || pthread_self() == tid )
+			{
 			return;
+			}
 
 		typename thread_map_t::iterator iter = threads_.find( tid );
-		if( iter->second->GetThreadID() == pthread_self() )
+		if( iter == threads_.end() )
 			{
-			throw Exception( "ThreadPool< Worker >::Remove() can't stop self thread" );
+			return;
 			}
 		
 		iter->second->Stop();
