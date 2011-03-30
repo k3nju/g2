@@ -34,9 +34,9 @@ namespace g2
 				 run_( true )
 				{
 				}
-
+			
 			inline void Stop(){ __sync_bool_compare_and_swap( &run_, true, false ); }
-			inline bool IsRunnable(){ __sync_fetch_and_and( &run_, true ); }
+			inline bool IsRunnable(){ return __sync_fetch_and_and( &run_, true ); }
 			
 			inline void* GetArgs() const { return args_; }
 			inline IThreadPool* GetThreadPool() const { return threadPool_; }
