@@ -66,9 +66,9 @@ namespace g2
 	int Epoll::Ctrl( int op, int fd, int events, const epoll_data_t *data )
 		{
 		struct epoll_event eve;
-		memset( &eve, 0, sizeof( eve ) );
 		eve.events = events;
-		eve.data = *data;
+		if( data != NULL )
+			eve.data = *data;
 
 		return epoll_ctl( epollFd_, op, fd, &eve );
 		}
