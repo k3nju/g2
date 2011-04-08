@@ -15,149 +15,106 @@
 namespace g2
 	{
 	//-----------------------------------------------------------------------------------------//
-	class IThreadPool
-		{
-		public:
-			virtual pthread_t Add( void *args ) = 0;
-			virtual void Remove( pthread_t tid ) = 0;
-			virtual void Join() = 0;
-			virtual void Stop() = 0;
-		};
+	class ThreadPool;
 
 	//-----------------------------------------------------------------------------------------//
 	class WorkerArgs
 		{
 		public:
-			WorkerArgs( IThreadPool *threadPool, void *args )
-				:threadPool_( threadPool ),
-				 args_( args ),
-				 run_( true )
-				{
-				}
-			
+			WorkerArgs( ThreadPool *threadPool );
 			inline void Stop(){ __sync_bool_compare_and_swap( &run_, true, false ); }
 			inline bool IsRunnable(){ return __sync_fetch_and_and( &run_, true ); }
-			
-			inline void* GetArgs() const { return args_; }
-			inline IThreadPool* GetThreadPool() const { return threadPool_; }
+			inline ThreadPool* GetThreadPool() const { return threadPool_; }
 			
 		private:
-			IThreadPool *threadPool_;
-			void *args_;
+			ThreadPool *threadPool_;
 			bool run_;
 		};
 	
 	//-----------------------------------------------------------------------------------------//
-	template < class Worker >
-	class ThreadPool :public IThreadPool
+	class ThreadPool
 		{
-			G2_MARK_UNCOPYABLE( ThreadPool< Worker > );
-			
-			class PoolableThreading :public Worker
+			G2_MARK_UNCOPYABLE( ThreadPool );
+
+			typedef boost::shared_ptr< g2::Threading > threading_ptr_t;
+			typedef struct Worker
 				{
-					using Worker::SetArgs;
-					
-				public:
-					PoolableThreading( IThreadPool *threadPool, void *args )
-						:args_( threadPool, args )
-						{
-						SetArgs( &args_ );
-						}
-					
-					inline void Stop(){ args_.Stop(); }
-					
-				private:
-					WorkerArgs args_;
-				};
-			
-			typedef boost::shared_ptr< PoolableThreading > worker_ptr_t;
+					Worker( threading_ptr_t t, ThreadPool *tp ):thread( t ), wargs( tp ){}
+					threading_ptr_t thread;
+					WorkerArgs wargs;
+				} worker_t;
+			typedef boost::shared_ptr< worker_t > worker_ptr_t;
 			typedef std::map< pthread_t, worker_ptr_t > thread_map_t;
 			typedef g2::CriticalScope< g2::MutexLock > critical_scope_t;
 			
 		public:
 			ThreadPool();
 			~ThreadPool();
+
+			template < class WorkerImpl >
+			pthread_t Add();
+			template < class WorkerImpl, class T0 >
+			pthread_t Add( T0 &t0 );
+			template < class WorkerImpl, class T0, class T1 >
+			pthread_t Add( T0 &t0, T1 &t1 );
+			template < class WorkerImpl, class T0, class T1, class T2 >
+			pthread_t Add( T0 &t0, T1 &t1, T2 &t2 );
+			template < class WorkerImpl, class T0, class T1, class T2, class T3 >
+			pthread_t Add( T0 &t0, T1 &t1, T2 &t2, T3 &t3 );
+			template < class WorkerImpl, class T0, class T1, class T2, class T3, class T4 >
+			pthread_t Add( T0 &t0, T1 &t1, T2 &t2, T3 &t3, T4 &t4 );
 			
-			virtual pthread_t Add( void *args );
-			virtual void Remove( pthread_t tid );
-			virtual void Join();
-			virtual void Stop(){ stopEvent_.Signal(); }
+			void Remove( pthread_t tid );
+			void Join();
+			void Stop();
 			
 		private:
+			pthread_t AddImpl( threading_ptr_t worker );
+			
 			thread_map_t threads_;
 			g2::MutexLock threadsLock_;
-			g2::SignalEvent stopEvent_;
+			bool isStopped_;
 		};
 
 	//-----------------------------------------------------------------------------------------//
-	template < class Worker >
-	ThreadPool< Worker >::ThreadPool()
-		:threads_(),
-		 threadsLock_(),
-		 stopEvent_()
+	template < class WorkerImpl >
+	pthread_t ThreadPool::Add()
 		{
-		}
-
-	//-----------------------------------------------------------------------------------------//
-	template < class Worker >
-	ThreadPool< Worker >::~ThreadPool()
-		{
-		}
-
-	//-----------------------------------------------------------------------------------------//
-	template < class Worker >
-	pthread_t ThreadPool< Worker >::Add( void *args )
-		{
-		worker_ptr_t worker( new PoolableThreading( this, args ) );
-		worker->Create();
-		pthread_t tid = worker->GetThreadID();
-		
-		critical_scope_t locked( threadsLock_ );
-		threads_.insert( std::make_pair( tid, worker ) );
-
-		return tid;
-		}
-
-	//-----------------------------------------------------------------------------------------//
-	template < class Worker >
-	void ThreadPool< Worker >::Remove( pthread_t tid )
-		{
-		critical_scope_t locked( threadsLock_ );
-		if( threads_.empty() || pthread_self() == tid )
-			{
-			return;
-			}
-
-		typename thread_map_t::iterator iter = threads_.find( tid );
-		if( iter == threads_.end() )
-			{
-			return;
-			}
-		
-		iter->second->Stop();
-		iter->second->Join();
-		threads_.erase( iter );
+		return AddImpl( threading_ptr_t( new WorkerImpl() ) );
 		}
 	
 	//-----------------------------------------------------------------------------------------//
-	template < class Worker >
-	void ThreadPool< Worker >::Join()
+	template < class WorkerImpl, class T0 >
+	pthread_t ThreadPool::Add( T0 &t0 )
 		{
-		stopEvent_.Wait();
+		return AddImpl( new WorkerImpl( t0 ) );
+		}
 
-		critical_scope_t locked( threadsLock_ );
-		typename thread_map_t::iterator begin = threads_.begin();
-		typename thread_map_t::iterator end = threads_.end();
+	//-----------------------------------------------------------------------------------------//
+	template < class WorkerImpl, class T0, class T1 >
+	pthread_t ThreadPool::Add( T0 &t0, T1 &t1 )
+		{
+		return AddImpl( new WorkerImpl( t0, t1 ) );
+		}
 
-		for(; begin != end; ++begin )
-			{
-			begin->second->Stop();
-			}
+	//-----------------------------------------------------------------------------------------//
+	template < class WorkerImpl, class T0, class T1, class T2 >
+	pthread_t ThreadPool::Add( T0 &t0, T1 &t1, T2 &t2 )
+		{
+		return AddImpl( new WorkerImpl( t0, t1, t2) );
+		}
 
-		begin = threads_.begin();
-		for(; begin != end; ++begin )
-			{
-			begin->second->Join();
-			}
+	//-----------------------------------------------------------------------------------------//
+	template < class WorkerImpl, class T0, class T1, class T2, class T3 >
+	pthread_t ThreadPool::Add( T0 &t0, T1 &t1, T2 &t2, T3 &t3 )
+		{
+		return AddImpl( new WorkerImpl( t0, t1, t2, t3 ) );
+		}
+
+	//-----------------------------------------------------------------------------------------//
+	template < class WorkerImpl, class T0, class T1, class T2, class T3, class T4 >
+	pthread_t ThreadPool::Add( T0 &t0, T1 &t1, T2 &t2, T3 &t3, T4 &t4 )
+		{
+		return AddImpl( new WorkerImpl( t0, t1, t2, t3, t4 ) );
 		}
 	}

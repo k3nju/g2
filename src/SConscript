@@ -6,8 +6,6 @@ Import( "src_dir" );
 
 tmp = [];
 for i in os.listdir( src_dir ):
-	if i.startswith( "threadpool" ):
-		continue;
 	if i.endswith( ".cpp" ):
 		tmp.append( i );
 
