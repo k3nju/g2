@@ -74,6 +74,7 @@ namespace g2
 			thread_map_t threads_;
 			g2::MutexLock threadsLock_;
 			bool isStopped_;
+			g2::SignalEvent stopEvent_;
 		};
 
 	//-----------------------------------------------------------------------------------------//
@@ -87,34 +88,34 @@ namespace g2
 	template < class WorkerImpl, class T0 >
 	pthread_t ThreadPool::Add( T0 &t0 )
 		{
-		return AddImpl( new WorkerImpl( t0 ) );
+		return AddImpl( threading_ptr_t( new WorkerImpl( t0 ) ) );
 		}
 
 	//-----------------------------------------------------------------------------------------//
 	template < class WorkerImpl, class T0, class T1 >
 	pthread_t ThreadPool::Add( T0 &t0, T1 &t1 )
 		{
-		return AddImpl( new WorkerImpl( t0, t1 ) );
+		return AddImpl( threading_ptr_t( new WorkerImpl( t0, t1 ) ) );
 		}
 
 	//-----------------------------------------------------------------------------------------//
 	template < class WorkerImpl, class T0, class T1, class T2 >
 	pthread_t ThreadPool::Add( T0 &t0, T1 &t1, T2 &t2 )
 		{
-		return AddImpl( new WorkerImpl( t0, t1, t2) );
+		return AddImpl( threading_ptr_t( new WorkerImpl( t0, t1, t2) ) );
 		}
 
 	//-----------------------------------------------------------------------------------------//
 	template < class WorkerImpl, class T0, class T1, class T2, class T3 >
 	pthread_t ThreadPool::Add( T0 &t0, T1 &t1, T2 &t2, T3 &t3 )
 		{
-		return AddImpl( new WorkerImpl( t0, t1, t2, t3 ) );
+		return AddImpl( threading_ptr_t( new WorkerImpl( t0, t1, t2, t3 ) ) );
 		}
 
 	//-----------------------------------------------------------------------------------------//
 	template < class WorkerImpl, class T0, class T1, class T2, class T3, class T4 >
 	pthread_t ThreadPool::Add( T0 &t0, T1 &t1, T2 &t2, T3 &t3, T4 &t4 )
 		{
-		return AddImpl( new WorkerImpl( t0, t1, t2, t3, t4 ) );
+		return AddImpl( threading_ptr_t( new WorkerImpl( t0, t1, t2, t3, t4 ) ) );
 		}
 	}

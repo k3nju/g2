@@ -13,7 +13,8 @@ namespace g2
 	ThreadPool::ThreadPool()
 		:threads_(),
 		 threadsLock_(),
-		 isStopped_( false )
+		 isStopped_( false ),
+		 stopEvent_()
 		{
 		}
 
@@ -26,7 +27,6 @@ namespace g2
 	pthread_t ThreadPool::AddImpl( threading_ptr_t thread )
 		{
 		worker_ptr_t worker( new worker_t( thread, this ) );
-		printf( "wargs = %p\n", &(worker->wargs) );
 		thread->SetArgs( &(worker->wargs) );
 		thread->Create();
 		pthread_t tid = thread->GetThreadID();
@@ -61,12 +61,16 @@ namespace g2
 	void ThreadPool::Stop()
 		{
 		__sync_bool_compare_and_swap( &isStopped_, false, true );
+		stopEvent_.Signal();
 		}
 	
 	//-----------------------------------------------------------------------------------------//
 	void ThreadPool::Join()
 		{
-		if( __sync_and_and_fetch( &isStooped_, true ) == false )
+		if( __sync_and_and_fetch( &isStopped_, true ) == false )
+			{
+			stopEvent_.Wait();
+			}
 			
 		critical_scope_t locked( threadsLock_ );
 		thread_map_t::iterator begin = threads_.begin();
