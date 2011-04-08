@@ -1,7 +1,7 @@
 #include "eventfd.h"
 #include <errno.h>
-#include "exception.h"
 #include "netutility.h"
+#include "exception.h"
 
 namespace g2
 	{

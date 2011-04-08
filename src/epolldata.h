@@ -20,7 +20,7 @@ namespace g2
 #ifdef GENSIN__GUTS
 #ifdef GENSIN__GUTS__ID__EpollDataTest
 
-#include <assert.h>
+#include <cassert>
 
 void Ptr( epoll_data_t *e )
 	{

@@ -3,7 +3,7 @@
 #include <boost/functional/hash.hpp>
 #include <tr1/unordered_map>
 #include <cassert>
-#include "socketheaders.h"
+#include <netinet/in.h>
 
 namespace g2
 	{

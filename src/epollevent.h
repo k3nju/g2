@@ -1,7 +1,6 @@
 #pragma once
 
 #include <sys/epoll.h>
-#include "memorypool.h"
 #include "uncopyable.h"
 
 namespace g2

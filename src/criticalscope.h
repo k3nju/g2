@@ -1,8 +1,8 @@
 #pragma once
 
+#include <cassert>
 #include "uncopyable.h"
 #include "mutexlock.h"
-#include <cassert>
 
 namespace g2
 	{

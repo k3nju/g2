@@ -16,9 +16,9 @@ namespace g2
 			explicit ConditionValue( g2::MutexLock &mlock );
 			~ConditionValue();
 
-			int Signal();
-			int Broadcast();
-			int Wait();
+			void Signal();
+			void Broadcast();
+			void Wait();
 			int Wait( time_t sec, long int n_sec );
 			
 		private:

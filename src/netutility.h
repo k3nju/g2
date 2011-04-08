@@ -2,9 +2,11 @@
 #define NetUtility NetUtil
 
 #include <string>
+#include <sys/types.h>
+
+#include <netdb.h>
 #include "mutexlock.h"
 #include "uncopyable.h"
-#include "socketheaders.h"
 
 namespace g2
 	{

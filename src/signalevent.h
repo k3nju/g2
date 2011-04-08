@@ -1,7 +1,6 @@
 #pragma once
 
 #include "uncopyable.h"
-#include "criticalscope.h"
 #include "mutexlock.h"
 #include "conditionvalue.h"
 
@@ -15,9 +14,9 @@ namespace g2
 			SignalEvent();
 			~SignalEvent();
 
-			int Signal();
-			int Broadcast();
-			int Wait();
+			void Signal();
+			void Broadcast();
+			void Wait();
 			int Wait( time_t sec, long int n_sec );
 
 		private:

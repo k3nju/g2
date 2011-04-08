@@ -1,8 +1,10 @@
 #include "inotify.h"
+#include <sys/inotify.h>
+#include <errno.h>
 #include "exception.h"
 #include "utility.h"
 #include "netutility.h"
-#include <sys/inotify.h>
+
 
 namespace g2
 	{

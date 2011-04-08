@@ -1,4 +1,5 @@
 #include "signalevent.h"
+#include "criticalscope.h"
 
 namespace g2
 	{
@@ -15,21 +16,21 @@ namespace g2
 		}
 
 	//-----------------------------------------------------------------------------------------//
-	int SignalEvent::Signal()
+	void SignalEvent::Signal()
 		{
 		CriticalScope<> locked( lock_ );
 		return cond_.Signal();
 		}
 
 	//-----------------------------------------------------------------------------------------//
-	int SignalEvent::Broadcast()
+	void SignalEvent::Broadcast()
 		{
 		CriticalScope<> locked( lock_ );
 		return cond_.Broadcast();
 		}
 
 	//-----------------------------------------------------------------------------------------//
-	int SignalEvent::Wait()
+	void SignalEvent::Wait()
 		{
 		CriticalScope<> locked( lock_ );
 		return cond_.Wait();

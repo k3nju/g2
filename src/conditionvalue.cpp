@@ -1,5 +1,7 @@
 #include "conditionvalue.h"
+#include <errno.h>
 #include "mutexlock.h"
+#include "exception.h"
 
 namespace g2
 	{
@@ -17,28 +19,44 @@ namespace g2
 		}
 
 	//-----------------------------------------------------------------------------------------//
-	int ConditionValue::Signal()
+	void ConditionValue::Signal()
 		{
-		return pthread_cond_signal( &condValue_ );
+		if( pthread_cond_signal( &condValue_ ) != 0 )
+			{
+			throw Exception( "ConditionValue::Signal() failed" );
+			}
 		}
 
 	//-----------------------------------------------------------------------------------------//
-	int ConditionValue::Broadcast()
+	void ConditionValue::Broadcast()
 		{
-		return pthread_cond_broadcast( &condValue_ );
+		if( pthread_cond_broadcast( &condValue_ ) != 0 )
+			{
+			throw Exception( "ConditionValue::Broadcast() failed" );
+			}
 		}
 
 	//-----------------------------------------------------------------------------------------//
-	int ConditionValue::Wait()
+	void ConditionValue::Wait()
 		{
-		return pthread_cond_wait( &condValue_, &( mLock_->lock_ ) );
+		if( pthread_cond_wait( &condValue_, &( mLock_->lock_ ) ) != 0 )
+			{
+			throw Exception( "ConditionValule::Wait() failed" );
+			}
 		}
 
 	//-----------------------------------------------------------------------------------------//
 	int ConditionValue::Wait( time_t sec, long int n_sec )
 		{
 		timespec time = { sec, n_sec };
+		int ret = 0;
 		
-		return pthread_cond_timedwait( &condValue_, &( mLock_->lock_ ), &time );
+		do
+			{
+			ret = pthread_cond_timedwait( &condValue_, &( mLock_->lock_ ), &time );
+			}
+		while( ret == EINTR );
+
+		return ret;
 		}
 	}

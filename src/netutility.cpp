@@ -1,6 +1,8 @@
 #include "netutility.h"
 #include <unistd.h>
 #include <fcntl.h>
+#include <arpa/inet.h>
+#include <errno.h>
 #include "criticalscope.h"
 #include "networkexception.h"
 
