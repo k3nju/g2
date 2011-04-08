@@ -1,24 +1,67 @@
 #! /usr/bin/python
+# -*- coding:utf-8 -*-
+
 import os;
 
-cxxflags = "-fpermissive -g -Wpointer-arith -pedantic -O2 -W -Wall -Wno-variadic-macros";
+# definitions
 
-# src configuration
-src_env = Environment( CXXFLAGS = cxxflags );
-Export( "src_env" );
+TARFLAGS = [ "-c", "-z" ];
 
-# test configuration
-test_env = Environment( CXXFLAGS = cxxflags );
-Export( "test_env" );
+# exports
+CXXFLAGS = [
+	"-g",
+	"-O2",
+	"-fpermissive",
+	"-Wpointer-arith",
+	"-pedantic",
+	"-Wall",
+	"-Wno-variadic-macros",
+	];
+Export( "CXXFLAGS" );
 
-# source directory
-src_dir = os.getcwd() + "/src";
-Export( "src_dir" );
+TOP_DIR = os.getcwd() + "/";
+Export( "TOP_DIR" );
 
-def Build():
-	SConscript( dirs="src", variant_dir="./build", src_dir="./src" );
-	if "test" in COMMAND_LINE_TARGETS:
-		test_env.SConscript( "test/SConscript" );
-		
-Build();
+SRC_DIR = TOP_DIR + "src/";
+Export( "SRC_DIR" );
 
+VAR_DIR = TOP_DIR + "build/";
+Export( "VAR_DIR" )
+
+ENV = Environment( CXXFLAGS = CXXFLAGS,
+				   TARFLAGS = TARFLAGS );
+Export( "ENV" );
+
+
+# functions
+
+# build libg2
+def build_libg2():
+	libg2 = ENV.SConscript( dirs = SRC_DIR, variant_dir= VAR_DIR );
+	ENV.Alias( "libg2", libg2 );
+	return libg2;
+
+# make tar.gz
+def make_tar_gz():
+	ENV.Tar( "g2.tar.gz", SRC_DIR );
+
+# make dummy install
+def make_dummy_install():
+	libg2 = ENV.SConscript( dirs = SRC_DIR, variant_dir= VAR_DIR );
+	dum_dir = TOP_DIR + "dummy_install/";
+	libg2_target = dum_dir + "libg2.a";
+	ENV.InstallAs( libg2_target, [ libg2 ] );
+	ENV.Alias( "install", libg2_target );
+	for src in Glob( SRC_DIR + "*.h" ):
+		basename = os.path.basename( src.get_path() );
+		dst = dum_dir + "g2/" + basename;
+		ENV.InstallAs( dst, src );
+		ENV.Alias( "install", dst );
+
+# main
+Default( build_libg2() );
+make_tar_gz();
+make_dummy_install();
+
+# print summary
+print "[*] BUILD_TARGETS: " + " ".join( map( str, BUILD_TARGETS ) );

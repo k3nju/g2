@@ -1,12 +1,8 @@
 #! /usr/bin/python
 
-import os;
-Import( "src_env" );
-Import( "src_dir" );
+Import( "ENV" );
+Import( "SRC_DIR" );
 
-tmp = [];
-for i in os.listdir( src_dir ):
-	if i.endswith( ".cpp" ):
-		tmp.append( i );
+libg2 = ENV.StaticLibrary( "libg2", Glob( "*.cpp" ) );
 
-src_env.StaticLibrary( "libg2", tmp );
+Return( "libg2" );
