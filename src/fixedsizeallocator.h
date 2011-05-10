@@ -21,15 +21,13 @@ namespace g2
 			
 			inline void* Allocate();
 			inline void Free( void *chunk );
+			inline bool IsEmpty();
 			
 		private:
 			typedef struct _chunk
 				{
 					struct _chunk *next;
-					uint8_t data[1];
 				} chunk_t;
-
-			static const size_t CHUNK_HEADER_SIZE = sizeof( chunk_t ) - 1;
 			
 			inline void SetNext( void *chunk, void *nextChunk )
 				{
@@ -43,6 +41,11 @@ namespace g2
 	//-----------------------------------------------------------------------------------------//
 	void* FixedSizeAllocator::Allocate()
 		{
+		if( head_ == NULL )
+			{
+			return NULL;
+			}
+		
 		chunk_t *ret = head_;
 		head_ = head_->next;
 
@@ -52,8 +55,20 @@ namespace g2
 	//-----------------------------------------------------------------------------------------//
 	void FixedSizeAllocator::Free( void *chunk )
 		{
-		chunk_t *newHead = (chunk_t*)( (uint8_t*)chunk + sizeof( chunk_t ) - 1 );
+		if( chunk == NULL )
+			{
+			return;
+			}
+		
+		chunk_t *newHead = (chunk_t*)chunk;
 		SetNext( newHead, head_ );
 		head_ = newHead;
 		}
+
+	//-----------------------------------------------------------------------------------------//
+	bool FixedSizeAllocator::IsEmpty()
+		{
+		return head_ == NULL;
+		}
+	
 	}

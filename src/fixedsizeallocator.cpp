@@ -1,14 +1,13 @@
 #include "fixedsizeallocator.h"
 #include <cassert>
 #include "exception.h"
-#include <stdio.h>
 
 namespace g2
 	{
 	//-----------------------------------------------------------------------------------------//
 	FixedSizeAllocator::FixedSizeAllocator( size_t chunkSize )
 		:head_( NULL ),
-		 chunkSize_( CHUNK_HEADER_SIZE + chunkSize )
+		 chunkSize_( chunkSize )
 		{
 		assert( chunkSize != 0 );
 		}
@@ -27,14 +26,12 @@ namespace g2
 			}
 		
 		uint8_t *tmp = (uint8_t*)block;
-		size_t count = size / chunkSize_;
-		printf( "%d\n", count );
+		size_t count = ( size / chunkSize_ ) - 1;
 		
 		for( size_t i = 0; i < count; ++i )
 			{
 			SetNext( tmp, tmp + chunkSize_ );
-			printf( "%p %p\n", tmp, tmp + chunkSize_ );
-			tmp = tmp + chunkSize_;
+			tmp += chunkSize_;
 			}
 		
 		// if "block" is the initial block,
@@ -58,6 +55,7 @@ namespace g2
 		// |[chunk_t.next]->[chunk_t.next]->[chunk_t.next]->|[chunk_t.next]->[chunk_t.next]->[chunk_t.next]->NULL|
 		// ^->head_                                         ^-old head_
 		//
+		
 		SetNext( tmp, head_ );
 		head_ = (chunk_t*)block;
 		}
