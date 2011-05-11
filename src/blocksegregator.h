@@ -9,13 +9,13 @@ namespace g2
 	// |--block---------------------|
 	// |[chunk][chunk][chunk][chunk]|
 	
-	class FixedSizeAllocator
+	class BlockSegregator
 		{
-			G2_MARK_UNCOPYABLE( FixedSizeAllocator );
+			G2_MARK_UNCOPYABLE( BlockSegregator );
 			
 		public:
-			FixedSizeAllocator( size_t chunkSize );
-			~FixedSizeAllocator();
+			BlockSegregator( size_t chunkSize );
+			~BlockSegregator();
 
 			void AddBlock( void *block, size_t size );
 			
@@ -39,7 +39,7 @@ namespace g2
 		};
 
 	//-----------------------------------------------------------------------------------------//
-	void* FixedSizeAllocator::Allocate()
+	void* BlockSegregator::Allocate()
 		{
 		if( head_ == NULL )
 			{
@@ -53,7 +53,7 @@ namespace g2
 		}
 
 	//-----------------------------------------------------------------------------------------//
-	void FixedSizeAllocator::Free( void *chunk )
+	void BlockSegregator::Free( void *chunk )
 		{
 		if( chunk == NULL )
 			{
@@ -66,7 +66,7 @@ namespace g2
 		}
 
 	//-----------------------------------------------------------------------------------------//
-	bool FixedSizeAllocator::IsEmpty()
+	bool BlockSegregator::IsEmpty()
 		{
 		return head_ == NULL;
 		}

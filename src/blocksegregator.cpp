@@ -5,7 +5,7 @@
 namespace g2
 	{
 	//-----------------------------------------------------------------------------------------//
-	FixedSizeAllocator::FixedSizeAllocator( size_t chunkSize )
+	BlockSegregator::BlockSegregator( size_t chunkSize )
 		:head_( NULL ),
 		 chunkSize_( chunkSize )
 		{
@@ -13,12 +13,12 @@ namespace g2
 		}
 
 	//-----------------------------------------------------------------------------------------//
-	FixedSizeAllocator::~FixedSizeAllocator()
+	BlockSegregator::~BlockSegregator()
 		{
 		}
 
 	//-----------------------------------------------------------------------------------------//
-	void FixedSizeAllocator::AddBlock( void *block, size_t size )
+	void BlockSegregator::AddBlock( void *block, size_t size )
 		{
 		if( size < chunkSize_ )
 			{
