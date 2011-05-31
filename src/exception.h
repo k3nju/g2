@@ -2,13 +2,14 @@
 
 #include <string>
 #include <sstream>
+#include <stdexcept>
 #include "debugutility.h"
 
 namespace g2
 	{
 	using namespace std;
 
-	class Exception
+	class Exception :public std::runtime_error
 		{
 		public:
 			// number should be errno
@@ -16,7 +17,7 @@ namespace g2
 			explicit Exception( string message = "", int number = -1, int code = -1 );
 			Exception( const Exception& );
 			Exception& operator = ( const Exception& );
-			virtual ~Exception();
+			virtual ~Exception() throw();
 
 			// set location informations
 			void SetLocInfo( const std::string &file, int line, const std::string &function );

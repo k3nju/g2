@@ -36,7 +36,7 @@ namespace g2
 			explicit NetworkException( string message = "", int number = -1, int code = -1 );
 			NetworkException( const NetworkException& );
 			NetworkException& operator = ( const NetworkException& );
-			virtual ~NetworkException();
+			virtual ~NetworkException() throw();
 		};
 	}
 

@@ -7,7 +7,8 @@ namespace g2
 	//	Exception(string message_ = "", int code = -1, int number = 0 )
 	//
 	Exception::Exception( string message, int number, int code )
-		:message_( message ), number_( number ), code_( code ),
+		:runtime_error( message ),
+		 message_( message ), number_( number ), code_( code ),
 		 file_(), line_( -1 ), function_(), backTrace_()
 		{
 		}
@@ -16,7 +17,8 @@ namespace g2
 	//	Exception(Exception &)
 	//
 	Exception::Exception( const Exception &rhs )
-		:message_( rhs.message_ ), number_( rhs.number_ ), code_( rhs.code_ ),
+		:runtime_error( rhs.message ),
+		 message_( rhs.message_ ), number_( rhs.number_ ), code_( rhs.code_ ),
 		 file_( rhs.file_ ), line_( rhs.line_ ), function_( rhs.function_ ),
 		 backTrace_( rhs.backTrace_ )
 		{
@@ -27,6 +29,7 @@ namespace g2
 		{
 		if( this != &rhs )
 			{
+			runtime_error::operator ( rhs );
 			message_	= rhs.message_;
 			number_     = rhs.number_;
 			code_		= rhs.code_;
