@@ -17,7 +17,7 @@ namespace g2
 	//	Exception(Exception &)
 	//
 	Exception::Exception( const Exception &rhs )
-		:runtime_error( rhs.message ),
+		:runtime_error( rhs.message_ ),
 		 message_( rhs.message_ ), number_( rhs.number_ ), code_( rhs.code_ ),
 		 file_( rhs.file_ ), line_( rhs.line_ ), function_( rhs.function_ ),
 		 backTrace_( rhs.backTrace_ )
@@ -29,7 +29,7 @@ namespace g2
 		{
 		if( this != &rhs )
 			{
-			runtime_error::operator ( rhs );
+			runtime_error::operator = ( rhs );
 			message_	= rhs.message_;
 			number_     = rhs.number_;
 			code_		= rhs.code_;
@@ -45,7 +45,7 @@ namespace g2
 	//////////////////////////////////////////////////
 	//	~Exception()
 	//
-	Exception::~Exception()
+	Exception::~Exception() throw()
 		{
 		}
 

@@ -22,7 +22,7 @@ namespace g2
 		}
 
 	//-----------------------------------------------------------------------------------------//
-	NetworkException::~NetworkException()
+	NetworkException::~NetworkException() throw()
 		{
 		}
 	}
