@@ -12,6 +12,7 @@ namespace g2
 			
 		public:
 			MutexLock();
+			MutexLock( int type );
 			~MutexLock();
 			
 			void Acquire();

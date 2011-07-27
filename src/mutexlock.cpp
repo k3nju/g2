@@ -9,7 +9,15 @@ namespace g2
 	MutexLock::MutexLock()
 		{
 		pthread_mutexattr_init( &attr_ );
-		pthread_mutexattr_settype( &attr_, PTHREAD_MUTEX_FAST_NP );
+		pthread_mutexattr_settype( &attr_, PTHREAD_MUTEX_RECURSIVE );
+		pthread_mutex_init( &lock_, &attr_ );
+		}
+
+	//-----------------------------------------------------------------------------------------//
+	MutexLock::MutexLock( int type )
+		{
+		pthread_mutexattr_init( &attr_ );
+		pthread_mutexattr_settype( &attr_, type );
 		pthread_mutex_init( &lock_, &attr_ );
 		}
 
