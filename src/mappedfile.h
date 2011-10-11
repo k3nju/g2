@@ -23,10 +23,11 @@ namespace g2
 			~MappedFile();
 
 			void Open();
-			void OpenAdjust();
+			void Close();
+			void Map( off_t begin );
+			void Unmap();
 			void Read( char *buf, size_t size );
 			void Write( const char *buf, size_t size );
-			void Close();
 			void Flush();
 			
 		private:
@@ -35,6 +36,8 @@ namespace g2
 			struct FileDescriptor
 				{
 				public:
+					inline FileDescriptor():fd( -1 ){};
+					bool IsOpened() const { return fd != -1; }
 					void Open( const char *file, int flags, mode_t mode );
 					void Close();
 					void Sync();
@@ -46,6 +49,7 @@ namespace g2
 			struct MappedRange
 				{
 				public:
+					MappedRange(){ begin = end = rpos = wpos = NULL; }
 					void Map( int fd, int prot, off_t begin, off_t size );
 					size_t Write( const char *buf, size_t size );
 					size_t Read( char *buf, size_t size );
@@ -61,8 +65,10 @@ namespace g2
 			int prot_;
 			mode_t mode_;
 			off_t mapSize_;
+			size_t fileSize_;
 
 			FileDescriptor fd_;
+			MappedRange mrange_;
 		};
 	}
 

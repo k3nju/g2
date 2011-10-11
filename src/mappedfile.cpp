@@ -31,25 +31,27 @@ namespace g2
 	void MappedFile::Open()
 		{
 		fd_.Open( filename.c_str(), flags_, mode_ );
+		fileSize_ = fd_.GetFileSize();
 		}
 
 	//-----------------------------------------------------------------------------------------//
-	void MappedFile::OpenAdjust()
+	void MappedFile::Map( off_t begin )
 		{
+		mrange_.Map( fd_.fd, prot_, begin, mapSize_ );
 		}
 
 	//-----------------------------------------------------------------------------------------//
 	void MappedFile::Read( char *buf, size_t size )
 		{
+		size_t sizeReadalbe = std::min( ( fileSize_ - ( 
+		while( size > 0 )
+			{
+			
+			}
 		}
 
 	//-----------------------------------------------------------------------------------------//
 	void MappedFile::Write( const char *buf, size_t size )
-		{
-		}
-
-	//-----------------------------------------------------------------------------------------//
-	void MappedFile::Close()
 		{
 		}
 
