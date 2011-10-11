@@ -1,5 +1,6 @@
 #pragma once
 #include <fcntl.h>
+#include <string>
 #include "uncopyable.h"
 
 namespace g2
@@ -11,31 +12,57 @@ namespace g2
 		public:
 			enum OPEN_FLAGS
 				{
-				READ = O_RDONLY | O_TRUNC,
-				WRITE = O_WRONLY | O_CREAT | O_TRUNC,
-				READWRITE = O_RDWR | O_CREAT | O_TRUNC
+				CREATE = O_CREATE,
+				TRUNC = O_TRUNC,
+				READ = O_RDONLY,
+				WRITE = O_WRONLY | O_CREAT,
+				READWRITE = O_RDWR | O_CREAT
 				};
 			
-			MappedFile();
+			MappedFile( const std::string &filename, OPEN_FLAGS flags, mode_t mode, off_t mapRangeSize );
 			~MappedFile();
 
-			void Open( const char *filename, OPEN_FLAGS flags, mode_t mode, off_t mapSize );
-			size_t Read( char *buf, size_t size );
-			size_t Write( const char *buf, size_t size );
+			void Open();
+			void OpenAdjust();
+			void Read( char *buf, size_t size );
+			void Write( const char *buf, size_t size );
 			void Close();
 			void Flush();
-			void Extend( size_t size );
-
-			off_t SetOffset( off_t offset );
-			off_t GetOffset() const;
-			size_t Forward( size_t size );
-			size_t Backward( size_t size );
-
+			
 		private:
-			int fd_;
-			char *base_;
-			char *end_;
-			char *pos_;
+			int Conv2Prot( OPEN_FLAGS flags );
+			
+			struct FileDescriptor
+				{
+				public:
+					void Open( const char *file, int flags, mode_t mode );
+					void Close();
+					void Sync();
+					void Truncate( off_t size );
+
+					int fd;
+				};
+			
+			struct MappedRange
+				{
+				public:
+					void Map( int fd, int prot, off_t begin, off_t size );
+					size_t Write( const char *buf, size_t size );
+					size_t Read( char *buf, size_t size );
+
+					void *begin;
+					void *end;
+					void *rpos;
+					void *wpos;
+				};
+
+			std::string filename_;
+			int openFlags_;
+			int prot_;
+			mode_t mode_;
+			off_t mapSize_;
+
+			FileDescriptor fd_;
 		};
 	}
 
@@ -54,9 +81,13 @@ int GutsEntryMappedFileTest( int, char** )
 	try
 		{
 		char tmp[1024];
+		memset( tmp, '\0', sizeof( tmp ) );
 		MappedFile mfile;
 
 		mfile.Open( "/tmp/aaa", MappedFile::READWRITE, 0644, 4 );
+		mfile.Read( tmp, 1024 );
+		puts( tmp );
+		return 0;
 		assert( mfile.Write( "ABC", 3 ) == 3 );
 		assert( mfile.Backward( 3 ) == 3 );
 		assert( mfile.Read( tmp, 3 ) == 3 );
