@@ -51,9 +51,14 @@ namespace g2
 				public:
 					MappedRange(){ begin = end = rpos = wpos = NULL; }
 					void Map( int fd, int prot, off_t begin, off_t size );
+					void Unmap();
 					size_t Write( const char *buf, size_t size );
 					size_t Read( char *buf, size_t size );
-
+					size_t GetLeftoverSize() const;
+					
+					off_t offset_begin;
+					off_t offset_size;
+					
 					void *begin;
 					void *end;
 					void *rpos;

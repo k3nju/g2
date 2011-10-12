@@ -35,18 +35,40 @@ namespace g2
 		}
 
 	//-----------------------------------------------------------------------------------------//
+	void MappedFile::Close()
+		{
+		Unmap();
+		fd_.Close();
+		}
+
+	//-----------------------------------------------------------------------------------------//
 	void MappedFile::Map( off_t begin )
 		{
 		mrange_.Map( fd_.fd, prot_, begin, mapSize_ );
 		}
 
 	//-----------------------------------------------------------------------------------------//
+	void MappedFile::Unmap()
+		{
+		mrange_.Unmap();
+		}
+
+	//-----------------------------------------------------------------------------------------//
 	void MappedFile::Read( char *buf, size_t size )
 		{
-		size_t sizeReadalbe = std::min( ( fileSize_ - ( 
+		size_t i = 0;
 		while( size > 0 )
 			{
+			if( mrange.GetLeftoverSize() == 0 )
+				{
+				off_t next = mrange.offset_begin + mapSize_;
+				mrange.Unmap();
+				mrange.Map( fd_.fd, prot_, next, mapSize_ );
+				}
 			
+			size_t sizeRead = mrange.Read( buf + i, size );
+			i += sizeRead;
+			size -= sizeRead;
 			}
 		}
 
@@ -58,5 +80,6 @@ namespace g2
 	//-----------------------------------------------------------------------------------------//
 	void MappedFile::Flush()
 		{
+		fd_.Sync();
 		}
 	}
