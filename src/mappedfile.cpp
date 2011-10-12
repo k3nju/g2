@@ -12,12 +12,11 @@
 namespace g2
 	{
 	//-----------------------------------------------------------------------------------------//
-	MappedFile::MappedFile( const std::string &filename, OPEN_FLAGS flags, mode_t mode, off_t mapRangeSize )
+	MappedFile::MappedFile( const std::string &filename, OPEN_FLAGS flags, mode_t mode, off_t pageSize )
 		:filename_( filename ),
 		 openFlags_( (int)flags ),
-		 prot_( Conv2Prot( flags ) ),
 		 mode_( mode ),
-		 mapSize_( mapRangeSize_ ),
+		 pageSize_( pageSize ),
 		 fd_()
 		{
 		}
@@ -31,50 +30,50 @@ namespace g2
 	void MappedFile::Open()
 		{
 		fd_.Open( filename.c_str(), flags_, mode_ );
-		fileSize_ = fd_.GetFileSize();
+		mrange.Map( fd_.fd, prot_, Conv2Prot( openFlags_ ), 0, fd_.GetStat().st_size );
 		}
 
 	//-----------------------------------------------------------------------------------------//
 	void MappedFile::Close()
 		{
-		Unmap();
+		mrange.Unmap();
 		fd_.Close();
 		}
 
 	//-----------------------------------------------------------------------------------------//
-	void MappedFile::Map( off_t begin )
+	off_t MappedFile::Read( char *buf, off_t size )
 		{
-		mrange_.Map( fd_.fd, prot_, begin, mapSize_ );
+		off_t rsize = std::min( size, mrange.GetReadableSize() );
+		memmove( buf, mrange.rpos, rsize );
+		mrange.AddReadCompletionSize( rsize );
+
+		return rsize;
 		}
 
 	//-----------------------------------------------------------------------------------------//
-	void MappedFile::Unmap()
+	void MappedFile::Write( const char *buf, off_t size )
 		{
-		mrange_.Unmap();
-		}
-
-	//-----------------------------------------------------------------------------------------//
-	void MappedFile::Read( char *buf, size_t size )
-		{
-		size_t i = 0;
+		off_t pos = 0;
 		while( size > 0 )
 			{
-			if( mrange.GetLeftoverSize() == 0 )
+			off_t writableSize = mrange.GetWritableSize();
+			if( writableSize == 0 )
 				{
-				off_t next = mrange.offset_begin + mapSize_;
-				mrange.Unmap();
-				mrange.Map( fd_.fd, prot_, next, mapSize_ );
+				off_t n = ( size / pageSize_ ) * pageSize_;
+				if( size % pageSize_ > 0 )
+					n += pageSize_;
+
+				off_t fileSize = fd_.GetStat().st_size;
+				fd_.Truncate( fileSize + n );
+				mrange.Remap( 0, fileSize + n );
 				}
 			
-			size_t sizeRead = mrange.Read( buf + i, size );
-			i += sizeRead;
-			size -= sizeRead;
+			off_t wsize = std::min( size, mrange.GetWritableSize() );
+			memmove( mrange.wpos + pos, buf + pos, wsize );
+			mrange.AddWriteCompletionSize( wsize );
+			wpos += wsize;
+			size -= wsize;
 			}
-		}
-
-	//-----------------------------------------------------------------------------------------//
-	void MappedFile::Write( const char *buf, size_t size )
-		{
 		}
 
 	//-----------------------------------------------------------------------------------------//

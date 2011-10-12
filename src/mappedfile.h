@@ -19,15 +19,13 @@ namespace g2
 				READWRITE = O_RDWR | O_CREAT
 				};
 			
-			MappedFile( const std::string &filename, OPEN_FLAGS flags, mode_t mode, off_t mapRangeSize );
+			MappedFile( const std::string &filename, OPEN_FLAGS flags, mode_t mode, off_t pageSize );
 			~MappedFile();
 
 			void Open();
 			void Close();
-			void Map( off_t begin );
-			void Unmap();
-			void Read( char *buf, size_t size );
-			void Write( const char *buf, size_t size );
+			off_t Read( char *buf, off_t size );
+			void Write( const char *buf, off_t size );
 			void Flush();
 			
 		private:
@@ -42,6 +40,7 @@ namespace g2
 					void Close();
 					void Sync();
 					void Truncate( off_t size );
+					struct stat GetStat() const;
 
 					int fd;
 				};
@@ -50,14 +49,16 @@ namespace g2
 				{
 				public:
 					MappedRange(){ begin = end = rpos = wpos = NULL; }
-					void Map( int fd, int prot, off_t begin, off_t size );
-					void Unmap();
-					size_t Write( const char *buf, size_t size );
-					size_t Read( char *buf, size_t size );
-					size_t GetLeftoverSize() const;
+					~MappedRange();
 					
-					off_t offset_begin;
-					off_t offset_size;
+					void Map( int fd, int prot, off_t begin, off_t size );
+					void Remap( off_t begin, off_t size );
+					void Unmap();
+					off_t GetSize() const;
+					off_t GetWritableSize() const;
+					off_t GetReadableSize() const;
+					void AddReadCompletionSize( off_t size );
+					void AddWriteCompletionSize( off_t size );
 					
 					void *begin;
 					void *end;
@@ -67,10 +68,9 @@ namespace g2
 
 			std::string filename_;
 			int openFlags_;
-			int prot_;
 			mode_t mode_;
-			off_t mapSize_;
-			size_t fileSize_;
+			off_t pageSize_;
+			off_t fileSize_;
 
 			FileDescriptor fd_;
 			MappedRange mrange_;
