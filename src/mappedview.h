@@ -1,4 +1,5 @@
 #pragma once
+#include <errno.h>
 #include <sys/types.h>
 #include "exception.h"
 #include "uncopyable.h"
@@ -15,7 +16,7 @@ namespace g2
 			inline ~MappedView();
 			
 			inline void Map( int fd, int prot, off_t offset_begin, off_t size );
-			inline void Remap( off_t offset_begin, off_t size );
+			inline void Remap( off_t size );
 			inline void Unmap();
 
 			inline void* GetBegin() const { return begin_; }
@@ -64,18 +65,36 @@ namespace g2
 		void *p = mmap( NULL, size, prot, MAP_SHARED, fd, offset_begin );
 		if( p == MAP_FAILED )
 			{
-			throw Exception( "mmap() failed" );
+			throw Exception( "mmap() failed", errno );
 			}
+
+		begin_ = p;
+		end_ = p + size;
+		rpos_ = p;
+		wpos_ = p;
 		}
 
 	//-----------------------------------------------------------------------------------------//
-	void MappedView::Remap( off_t offset_begin, off_t size )
+	void MappedView::Remap( off_t size )
 		{
-		void *p = mremap( begin
+		void *p = mremap( begin_,  end_ - begin_, size, MREMAP_MAYMOVE );
+		if( p == MAP_FAILED )
+			{
+			throw Exception( "mremap() failed", errno );
+			}
+		
+		begin_ = p;
+		end_ = p + size;
+		rpos_ = p;
+		wpos_ = p;
 		}
 
 	//-----------------------------------------------------------------------------------------//
 	void MappedView::Unmap()
 		{
+		if( munmap( begin_, end_ - begin_ ) == -1 )
+			{
+			throw Exception( "munmap() failed", errno );
+			}
 		}
 	}

@@ -1,4 +1,5 @@
 #pragma once
+#include <errno.h>
 #include <sys/types.h>
 #include "exception.h"
 #include "uncopyable.h"
