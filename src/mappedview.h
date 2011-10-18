@@ -1,5 +1,6 @@
 #pragma once
 #include <sys/types.h>
+#include "exception.h"
 #include "uncopyable.h"
 
 namespace g2
@@ -13,29 +14,39 @@ namespace g2
 			inline MappedView();
 			inline ~MappedView();
 			
-			inline void Map( int fd, int prot, off_t begin, off_t size );
-			inline void Remap( off_t begin, off_t size );
+			inline void Map( int fd, int prot, off_t offset_begin, off_t size );
+			inline void Remap( off_t offset_begin, off_t size );
 			inline void Unmap();
-			
-			void *begin;
-			void *end;
-			void *rpos;
-			void *wpos;
+
+			inline void* GetBegin() const { return begin_; }
+			inline void* GetEnd() const { return end_; }
+			inline void* GetReadPosition() const { return rpos_; }
+			inline void* GetWritePosition() const { return wpos_; }
+			inline void SetReadPosition( off_t offset ){ rpos_ = begin_ + offset; }
+			inline void SetWritePosition( off_t offset ){ wpos_ = begin_ + offset; }
+			inline void AddReadCompletionSize( off_t size ){ rpos_ += size; }
+			inline void AddWriteCmpletionSize( off_t size ){ wpos_ += size; }
+
+		private:
+			void *begin_;
+			void *end_;
+			void *rpos_;
+			void *wpos_;
 		};
 
 	//-----------------------------------------------------------------------------------------//
 	MappedView::MappedView()
-		:begin( NULL ),
-		 end( NULL ),
-		 rpos( NULL ),
-		 wpos( NULL )
+		:begin_( NULL ),
+		 end_( NULL ),
+		 rpos_( NULL ),
+		 wpos_( NULL )
 		{
 		}
 
 	//-----------------------------------------------------------------------------------------//
 	MappedView::~MappedView()
 		{
-		if( begin != NULL )
+		if( begin_ != NULL )
 			{
 			try
 				{
@@ -48,13 +59,19 @@ namespace g2
 		}
 	
 	//-----------------------------------------------------------------------------------------//
-	void MappedView::Map( int fd, int prot, off_t begin, off_t size )
+	void MappedView::Map( int fd, int prot, off_t offset_begin, off_t size )
 		{
+		void *p = mmap( NULL, size, prot, MAP_SHARED, fd, offset_begin );
+		if( p == MAP_FAILED )
+			{
+			throw Exception( "mmap() failed" );
+			}
 		}
 
 	//-----------------------------------------------------------------------------------------//
-	void MappedView::Remap( off_t begin, off_t size )
+	void MappedView::Remap( off_t offset_begin, off_t size )
 		{
+		void *p = mremap( begin
 		}
 
 	//-----------------------------------------------------------------------------------------//
