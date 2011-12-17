@@ -1,7 +1,8 @@
 #pragma once
 
 #define G2_COROUTINE(l)							\
-	switch( int &line = l )						\
+	int *__FILE__##__FILE__ = l;				\
+	switch( *__FILE__##__FILE__ )				\
 	  case -1:									\
 		if(1)									\
 			{;G2_COROUTINE_OUT:break;}			\
@@ -11,5 +12,5 @@
 	if(0){case __LINE__:;}												\
 	else																\
 		for(;;)															\
-			if(line==__LINE__)goto G2_COROUTINE_OUT;					\
-			else if((line=__LINE__)) switch(1)case 1:
+			if(*__FILE__##__FILE__==__LINE__)goto G2_COROUTINE_OUT;		\
+			else if((*__FILE__##__FILE__=__LINE__)) switch(1)case 1:
