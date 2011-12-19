@@ -16,7 +16,7 @@
 			else if((*__FILE__##__LINE__=__LINE__)) switch(1)case 1:
 
 
-#define G2_COROUTINE_TSL							\
+#define G2_COROUTINE_TLS							\
 	static __thread int __FILE__##__LINE__ = 0;		\
 	switch( __FILE__##__LINE__ )					\
 	  case -1:										\
@@ -24,7 +24,7 @@
 			{;G2_COROUTINE_OUT:break;}				\
 		else case 0:
 
-#define G2_YIELD_TSL													\
+#define G2_YIELD_TLS													\
 	if(0){case __LINE__:;}												\
 	else																\
 		for(;;)															\
