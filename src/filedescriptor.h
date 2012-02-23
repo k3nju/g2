@@ -1,6 +1,8 @@
 #pragma once
 #include <errno.h>
 #include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include "exception.h"
 #include "uncopyable.h"
 
@@ -70,7 +72,7 @@ namespace g2
 	//-----------------------------------------------------------------------------------------//
 	void FileDescriptor::Sync()
 		{
-		if( fdatesync( fd_ ) == -1 )
+		if( fdatasync( fd_ ) == -1 )
 			{
 			throw Exception( "fdatasync() failed", errno );
 			}

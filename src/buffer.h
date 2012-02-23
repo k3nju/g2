@@ -1,4 +1,4 @@
-#pragma once
+p#pragma once
 #include <sys/types.h>
 #include <stdint.h>
 #include <cstdlib>
@@ -10,7 +10,7 @@ namespace g2
 		public:
 			Buffer();
 			explicit Buffer( size_t size );
-			Buffer( const void *buf, size_t size );
+			Buffer( const uint8_t *buf, size_t size );
 			Buffer( const Buffer &rhs );
 			const Buffer& operator = ( const Buffer &rhs );
 			const Buffer& operator += ( const Buffer &rhs );
@@ -19,8 +19,8 @@ namespace g2
 			bool operator ==( const Buffer &rhs );
 			bool operator !=( const Buffer &rhs );
 
-			size_t Write( const void *buf, size_t size );
-			size_t Read( void *buf, size_t size );
+			size_t Write( const uint8_t *buf, size_t size );
+			size_t Read( uint8_t *buf, size_t size );
 
 			void EnsureCapacity( size_t size );
 			void Clear();
@@ -31,8 +31,8 @@ namespace g2
 			void AddReadCompletionSize( size_t size );
 			void AddWriteCompletionSize( size_t size );
 
-			const void* GetBegin() const;
-			void* GetEnd();
+			const uint8_t* GetBegin() const;
+			uint8_t* GetEnd();
 			
 			// needs "const void* GetEnd()"?
 			// needs "void* GetBegin()"?
@@ -40,11 +40,11 @@ namespace g2
 		private:
 			void Allocate( size_t size );
 			size_t AlignSize( size_t size ) const { return ( size + ( ALIGN_SIZE - 1 ) ) & ~( ALIGN_SIZE - 1 ); };
-			size_t GetRestSize() const { return ( chunk_ + chunkSize_ ) - ( dataHead_ + dataSize_ ); }
+			size_t GetRemainingSize() const { return ( chunk_ + chunkSize_ ) - ( data_ + dataSize_ ); }
 			
 			uint8_t *chunk_;
 			size_t chunkSize_;
-			uint8_t *dataHead_;
+			uint8_t *data_;
 			size_t dataSize_;
 			
 			static const size_t ALIGN_SIZE = sizeof( int );

@@ -11,7 +11,7 @@ namespace g2
 	Buffer::Buffer()
 		:chunk_( NULL ),
 		 chunkSize_( 0 ),
-		 dataHead_( NULL ),
+		 data_( NULL ),
 		 dataSize_( 0 )
 		{
 		Allocate( DEFAULT_CAPACITY );
@@ -21,7 +21,7 @@ namespace g2
 	Buffer::Buffer( size_t size )
 		:chunk_( NULL ),
 		 chunkSize_( 0 ),
-		 dataHead_( NULL ),
+		 data_( NULL ),
 		 dataSize_( 0 )
 		{
 		if( size == 0 )
@@ -33,10 +33,10 @@ namespace g2
 		}
 
 	//-----------------------------------------------------------------------------------------//
-	Buffer::Buffer( const void *buf, size_t bufSize )
+	Buffer::Buffer( const uint8_t *buf, size_t bufSize )
 		:chunk_( NULL ),
 		 chunkSize_( 0 ),
-		 dataHead_( NULL ),
+		 data_( NULL ),
 		 dataSize_( 0 )
 		{
 		Allocate( bufSize );
@@ -47,7 +47,7 @@ namespace g2
 	Buffer::Buffer( const Buffer &rhs )
 		:chunk_( NULL ),
 		 chunkSize_( 0 ),
-		 dataHead_( NULL ),
+		 data_( NULL ),
 		 dataSize_( 0 )
 		{
 		size_t rSize = rhs.GetReadableSize();
@@ -82,6 +82,7 @@ namespace g2
 	Buffer::~Buffer()
 		{
 		free( chunk_ );
+		chunk_ = NULL;
 		}
 
 	//-----------------------------------------------------------------------------------------//
@@ -98,22 +99,22 @@ namespace g2
 		}
 
 	//-----------------------------------------------------------------------------------------//
-	size_t Buffer::Write( const void *bufIn, size_t bufInSize )
+	size_t Buffer::Write( const uint8_t *bufIn, size_t bufInSize )
 		{
 		EnsureCapacity( bufInSize );
-		memmove( dataHead_ + dataSize_, bufIn, bufInSize );
+		memmove( data_ + dataSize_, bufIn, bufInSize );
 		dataSize_ += bufInSize;
 
 		return bufInSize;
 		}
 
 	//-----------------------------------------------------------------------------------------//
-	size_t Buffer::Read( void *bufOut, size_t bufOutSize )
+	size_t Buffer::Read( uint8_t *bufOut, size_t bufOutSize )
 		{
 		size_t readSize = std::min( bufOutSize, dataSize_ );
 		
-		memmove( bufOut, dataHead_, readSize );
-		dataHead_ += readSize;
+		memmove( bufOut, data_, readSize );
+		data_ += readSize;
 		dataSize_ -= readSize;
 
 		return readSize;
@@ -122,15 +123,16 @@ namespace g2
 	//-----------------------------------------------------------------------------------------//
 	void Buffer::EnsureCapacity( size_t bufSize )
 		{
-		size_t rest = GetRestSize();
-		if( rest >= bufSize )
+		size_t remain = GetRemainingSize();
+		if( remain >= bufSize )
 			{
 			return;
 			}
 
-		size_t blankSize = dataHead_ - chunk_;
+		size_t blankSize = data_ - chunk_;
 		size_t newSize = chunkSize_ * 2;
-		while( bufSize > newSize - rest )
+		size_t usedSize = ( ( data_ + dataSize_ ) - chunk_ );
+		while( bufSize > newSize - usedSize )
 			{
 			newSize *= 2;
 			}
@@ -143,13 +145,13 @@ namespace g2
 		
 		chunk_ = static_cast< uint8_t* >( m );
 		chunkSize_ = newSize;
-		dataHead_ = chunk_ + blankSize;
+		data_ = chunk_ + blankSize;
 		}
 
 	//-----------------------------------------------------------------------------------------//
 	void Buffer::Clear()
 		{
-		dataHead_ = chunk_;
+		data_ = chunk_;
 		dataSize_ = 0;
 		}
 
@@ -162,19 +164,19 @@ namespace g2
 	//-----------------------------------------------------------------------------------------//
 	size_t Buffer::GetWritableSize() const
 		{
-		return ( chunk_ + chunkSize_ ) - ( dataHead_ + dataSize_ );
+		return ( chunk_ + chunkSize_ ) - ( data_ + dataSize_ );
 		}
 
 	//-----------------------------------------------------------------------------------------//
 	void Buffer::AddReadCompletionSize( size_t sizeRead )
 		{
-		dataHead_ += sizeRead;
+		data_ += sizeRead;
 		dataSize_ -= sizeRead;
 
-		if( (size_t)( dataHead_ - chunk_ ) > chunkSize_ / 2 )
+		if( (size_t)( data_ - chunk_ ) > chunkSize_ / 2 )
 			{
-			memmove( chunk_, dataHead_, dataSize_ );
-			dataHead_ = chunk_;
+			memmove( chunk_, data_, dataSize_ );
+			data_ = chunk_;
 			}
 		}
 
@@ -185,15 +187,15 @@ namespace g2
 		}
 
 	//-----------------------------------------------------------------------------------------//
-	const void* Buffer::GetBegin() const
+	const uint8_t* Buffer::GetBegin() const
 		{
-		return dataHead_;
+		return data_;
 		}
 
 	//-----------------------------------------------------------------------------------------//
-	void* Buffer::GetEnd()
+	uint8_t* Buffer::GetEnd()
 		{
-		return dataHead_ + dataSize_;
+		return data_ + dataSize_;
 		}
 
 	//-----------------------------------------------------------------------------------------//
@@ -203,13 +205,13 @@ namespace g2
 		assert( chunkSize_ == 0 );
 
 		size = AlignSize( size );
-		void *m = malloc( size );
+		uint8_t *m = malloc( size );
 		if( m == NULL )
 			{
 			throw std::bad_alloc();
 			}
 
-		dataHead_ = chunk_ = static_cast< uint8_t* >( m );
+		data_ = chunk_ = static_cast< uint8_t* >( m );
 		chunkSize_ = size;
 		}
 	}

@@ -1,6 +1,7 @@
 #pragma once
 #include <errno.h>
 #include <sys/types.h>
+#include <stdint.h>
 #include "exception.h"
 #include "uncopyable.h"
 
@@ -19,20 +20,20 @@ namespace g2
 			inline void Remap( off_t size );
 			inline void Unmap();
 
-			inline void* GetBegin() const { return begin_; }
-			inline void* GetEnd() const { return end_; }
-			inline void* GetReadPosition() const { return rpos_; }
-			inline void* GetWritePosition() const { return wpos_; }
+			inline uint8_t* GetBegin() const { return begin_; }
+			inline uint8_t* GetEnd() const { return end_; }
+			inline uint8_t* GetReadPosition() const { return rpos_; }
+			inline uint8_t* GetWritePosition() const { return wpos_; }
 			inline void SetReadPosition( off_t offset ){ rpos_ = begin_ + offset; }
 			inline void SetWritePosition( off_t offset ){ wpos_ = begin_ + offset; }
 			inline void AddReadCompletionSize( off_t size ){ rpos_ += size; }
 			inline void AddWriteCmpletionSize( off_t size ){ wpos_ += size; }
 
 		private:
-			void *begin_;
-			void *end_;
-			void *rpos_;
-			void *wpos_;
+			uint8_t *begin_;
+			uint8_t *end_;
+			uint8_t *rpos_;
+			uint8_t *wpos_;
 		};
 
 	//-----------------------------------------------------------------------------------------//
@@ -62,7 +63,7 @@ namespace g2
 	//-----------------------------------------------------------------------------------------//
 	void MappedView::Map( int fd, int prot, off_t offset_begin, off_t size )
 		{
-		void *p = mmap( NULL, size, prot, MAP_SHARED, fd, offset_begin );
+		uint8_t *p = mmap( NULL, size, prot, MAP_SHARED, fd, offset_begin );
 		if( p == MAP_FAILED )
 			{
 			throw Exception( "mmap() failed", errno );
@@ -77,7 +78,7 @@ namespace g2
 	//-----------------------------------------------------------------------------------------//
 	void MappedView::Remap( off_t size )
 		{
-		void *p = mremap( begin_,  end_ - begin_, size, MREMAP_MAYMOVE );
+		uint8_t *p = mremap( begin_,  end_ - begin_, size, MREMAP_MAYMOVE );
 		if( p == MAP_FAILED )
 			{
 			throw Exception( "mremap() failed", errno );
