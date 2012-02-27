@@ -1,4 +1,4 @@
-p#pragma once
+#pragma once
 #include <sys/types.h>
 #include <stdint.h>
 #include <cstdlib>
@@ -41,7 +41,13 @@ namespace g2
 			void Allocate( size_t size );
 			size_t AlignSize( size_t size ) const { return ( size + ( ALIGN_SIZE - 1 ) ) & ~( ALIGN_SIZE - 1 ); };
 			size_t GetRemainingSize() const { return ( chunk_ + chunkSize_ ) - ( data_ + dataSize_ ); }
-			
+
+			// B = Blank space. // Used. But neither writable nor readable.
+			// D = Data space. // Used. Readable.
+			// R = Remaining space // Not used. Writable.
+			// ex. |BBBBBBBB|DDDDDDD|RRRRRRRRRRRRRRRR|
+			//     ^:chunk_ ^data_  ^data_+dataSize  ^chunk_+chunkSize_
+			//     ^^^^^^^^^^^^^^^^^^used
 			uint8_t *chunk_;
 			size_t chunkSize_;
 			uint8_t *data_;
