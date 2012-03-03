@@ -1,7 +1,8 @@
 #pragma once
 #include <errno.h>
-#include <sys/types.h>
 #include <stdint.h>
+#include <sys/types.h>
+#include <sys/mman.h>
 #include "exception.h"
 #include "uncopyable.h"
 
