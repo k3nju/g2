@@ -205,7 +205,7 @@ namespace g2
 		assert( chunkSize_ == 0 );
 
 		size = AlignSize( size );
-		uint8_t *m = malloc( size );
+		uint8_t *m = (uint8_t*)malloc( size );
 		if( m == NULL )
 			{
 			throw std::bad_alloc();
