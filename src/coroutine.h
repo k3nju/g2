@@ -43,3 +43,28 @@
 		for(;;)															\
 			if((__FILE__##__LINE__=__LINE__)) switch(1)case 1:
 
+
+namespace g2
+	{
+	class CoroutineContext
+		{
+		public:
+			CoroutineContext()
+				:line_( 0 )
+				{
+				}
+			
+			inline int* GetLine() const
+				{
+				return &line_;
+				}
+
+			inline void Clear()
+				{
+				line_ = 0;
+				}
+
+		private:
+			int line_;
+		};
+	}
