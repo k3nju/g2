@@ -4,6 +4,7 @@
 #include <sys/time.h>
 #include <string.h>
 #include <errno.h>
+#include <unistd.h>
 #include "uncopyable.h"
 #include "netutility.h"
 #include "networkexception.h"

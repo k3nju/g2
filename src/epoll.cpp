@@ -1,5 +1,6 @@
 #include "epoll.h"
 #include <errno.h>
+#include <unistd.h>
 #include "exception.h"
 
 namespace g2
