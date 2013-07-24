@@ -1,6 +1,7 @@
 #include "signalfd.h"
 
 #include <errno.h>
+#include <unistd.h>
 #include <cassert>
 #include "exception.h"
 

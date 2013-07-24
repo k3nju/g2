@@ -7,13 +7,33 @@ namespace g2
 	{
 	class UDPSocket :public g2::SocketBase< UDPSocket >
 		{
+		public:
+			struct Destination
+				{
+					Destination(
+						int family,
+						const char *host,
+						const char *service
+						)
+						:family( family )
+						,host( host )
+						,service( service )
+						{
+						}
+					
+					int family;
+					const char *host;
+					const char *service;
+				};
+
+		private:
 			friend class g2::SocketBase< UDPSocket >;
 			
 		public:
 			UDPSocket();
 			~UDPSocket();
 
-			void Connect( const char *addr, unsigned short port );
+			void SetDestination( const Destination &dst );
 			void EnableBroadcast( bool flag );
 
 			ssize_t SendTo( const char *buf, size_t size, const struct sockaddr &destAddr, socklen_t addrLen );

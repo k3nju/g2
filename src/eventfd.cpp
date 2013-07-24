@@ -1,5 +1,6 @@
 #include "eventfd.h"
 #include <errno.h>
+#include <unistd.h>
 #include "netutility.h"
 #include "exception.h"
 

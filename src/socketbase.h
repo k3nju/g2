@@ -19,10 +19,7 @@ namespace g2
 		public:
 			typedef SocketBase< StreamImpl > self_t;
 			
-			void CreateSocket( int type );
-			void CreateSocket();
-				
-			void Bind( const char *addr, unsigned short port );
+			void Bind( const AddrInfo &addrInfo );
 			void Close();
 
 			ssize_t Send( const char *buf );
@@ -63,34 +60,13 @@ namespace g2
 		:socket_( socket )
 		{
 		}
-
+	
 	//-----------------------------------------------------------------------------------------//
 	template < class StreamImpl >
-	void SocketBase< StreamImpl >::CreateSocket( int type )
+	void SocketBase< StreamImpl >::Bind( const AddrInfo &addrInfo )
 		{
-		if( socket_ == -1 )
-			{
-			socket_ = NetUtil::CreateSocket( AF_INET, type, 0 );
-			}
-		}
-
-	//-----------------------------------------------------------------------------------------//
-	template < class StreamImpl >
-	void SocketBase< StreamImpl >::CreateSocket()
-		{
-		if( socket_ == -1 )
-			{
-			socket_ = NetUtil::CreateSocket( AF_INET, StreamImpl::SOCKET_TYPE, 0 );
-			}
-		}
-
-	//-----------------------------------------------------------------------------------------//
-	template < class StreamImpl >
-	void SocketBase< StreamImpl >::Bind( const char *addr, unsigned short port )
-		{
-		string portStr = Utility::Convert2String( port );
-		AddrInfo ni( AF_INET, StreamImpl::SOCKET_TYPE, AddrInfo::SERVER, addr, portStr.c_str() );
-		const struct addrinfo *res = ni.Get();
+		const struct addrinfo *res = addrInfo.Get();
+		socket_ = NetUtil::CreateSocket( res->ai_family, res->ai_socktype, res->ai_protocol );
 		
 		if( bind( socket_, res->ai_addr, res->ai_addrlen ) == -1 )
 			{

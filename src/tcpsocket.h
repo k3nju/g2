@@ -13,7 +13,7 @@ namespace g2
 			explicit TCPSocket( int socket );
 			~TCPSocket();
 
-			void Connect( const char *addr, unsigned short port );
+			void Connect( const AddrInfo &addrInfo );
 			bool EndConnect();
 			
 			void Listen( int backlog );

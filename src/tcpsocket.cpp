@@ -7,7 +7,6 @@ namespace g2
 	//-----------------------------------------------------------------------------------------//
 	TCPSocket::TCPSocket():SocketBase< TCPSocket >()
 		{
-		CreateSocket();
 		}
 
 	//-----------------------------------------------------------------------------------------//
@@ -28,18 +27,16 @@ namespace g2
 		}
 
 	//-----------------------------------------------------------------------------------------//
-	void TCPSocket::Connect( const char *addr, unsigned short port )
+	void TCPSocket::Connect( const AddrInfo &addrInfo )
 		{
+		const struct addrinfo *res = addrInfo.Get();
+		
 		if( GetSocket() == -1 )
 			{
-			CreateSocket();
+			SetSocket( NetUtil::CreateSocket( res->ai_family, res->ai_socktype, res->ai_protocol ) );
 			}
 		
 		int result = 0;
-		string portStr = Utility::Convert2String( port );
-		AddrInfo ai( AF_INET, SOCK_STREAM, AddrInfo::CLIENT, addr, portStr.c_str() );
-		const struct addrinfo *res = ai.Get();
-		
 		do
 			{
 			result = connect( GetSocket(), res->ai_addr, res->ai_addrlen );

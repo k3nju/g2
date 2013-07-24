@@ -4,9 +4,10 @@
 namespace g2
 	{
 	//-----------------------------------------------------------------------------------------//
-	UDPSocket::UDPSocket():SocketBase< UDPSocket >()
+	UDPSocket::UDPSocket()
+		:SocketBase< UDPSocket >()
+		,addrInfo_()
 		{
-		CreateSocket();
 		}
 
 	//-----------------------------------------------------------------------------------------//
@@ -22,24 +23,16 @@ namespace g2
 		}
 
 	//-----------------------------------------------------------------------------------------//
-	void UDPSocket::Connect( const char *addr, unsigned short port )
+	void UDPSocket::SetDestination( const Destination &dst )
 		{
-		if( GetSocket() == -1 )
-			{
-			CreateSocket();
-			}
-
 		int ret = 0;
-		string portStr = Utility::Convert2String( port );
-		bool isSet = addrInfo_.Set( AF_INET, SOCK_DGRAM, AddrInfo::CLIENT, addr, portStr.c_str(), ret );
-		
-		if( isSet == false )
+		if( addrInfo_.Set( dst.family, SOCKET_TYPE, AddrInfo::CLIENT, dst.host, dst.service, ret ) == false )
 			{
 			string msg = "getaddrinfo() failed. " + string( gai_strerror( ret ) );
 			throw NetworkException( msg, ret, NAME_RESOLUTION_FAILURE );
 			}
 		}
-
+	
 	//-----------------------------------------------------------------------------------------//
 	void UDPSocket::EnableBroadcast( bool flag )
 		{

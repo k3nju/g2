@@ -78,6 +78,7 @@ namespace g2
 	//-----------------------------------------------------------------------------------------//
 	int NetUtility::CreateSocket( int domain, int type, int protocol )
 		{
+		type |= SOCK_CLOEXEC;
 		int tmpsock = socket( domain, type, protocol );
 		if( tmpsock == -1 )
 			{
