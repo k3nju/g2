@@ -61,17 +61,12 @@ namespace g2
 	int Utility::Close( int fd )
 		{
 		int result = 0;
-		
-		do
+		result = close( fd );
+		if( result == -1 )
 			{
-			result = close( fd );
-			if( result == -1 && errno != EINTR )
-				{
-				throw Exception( "close() failed", errno );
-				}
+			throw Exception( "close() failed", errno );
 			}
-		while( result == -1 && errno == EINTR );
-
+		
 		return result;
 		}
 

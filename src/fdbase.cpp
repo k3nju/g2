@@ -64,20 +64,6 @@ namespace g2
 	//-----------------------------------------------------------------------------------------//
 	int FDBase::Close()
 		{
-		int retval = 0;
-
-		do
-			{
-			retval = close( fd_ );
-			if( retval == -1 && errno != EINTR )
-				{
-				return -1;
-				}
-			}
-		while( retval == -1 && errno == EINTR );
-
-		fd_ = -1;
-		
-		return retval;
+		return close( fd_ );
 		}
 	}
