@@ -54,6 +54,11 @@ namespace g2
 	//-----------------------------------------------------------------------------------------//
 	void FileDescriptor::Open( const char *file, int flags, mode_t mode )
 		{
+		if( fd_  == -1)
+			{
+			Close();
+			}
+		
 		fd_ = open( file, flags, mode );
 		if( fd_ == -1 )
 			{
@@ -64,15 +69,27 @@ namespace g2
 	//-----------------------------------------------------------------------------------------//
 	void FileDescriptor::Close()
 		{
+		if( fd_ == -1)
+			{
+			return;
+			}
+		
 		if( close( fd_ ) == -1 )
 			{
 			throw Exception( "close() failed", errno );
 			}
-		}
 
+		fd_ = -1;
+		}
+	
 	//-----------------------------------------------------------------------------------------//
 	void FileDescriptor::Sync()
 		{
+		if( fd_ == -1 )
+			{
+			return;
+			}
+		
 		if( fdatasync( fd_ ) == -1 )
 			{
 			throw Exception( "fdatasync() failed", errno );
@@ -82,6 +99,11 @@ namespace g2
 	//-----------------------------------------------------------------------------------------//
 	void FileDescriptor::Truncate( off_t length )
 		{
+		if( fd_ == -1 )
+			{
+			return;
+			}
+		
 		if( ftruncate( fd_, length ) == -1 )
 			{
 			throw Exception( "ftruncate() failed", errno );

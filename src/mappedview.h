@@ -99,5 +99,7 @@ namespace g2
 			{
 			throw Exception( "munmap() failed", errno );
 			}
+
+		begin_ = end_ = rpos_ = wpos_ = NULL;
 		}
 	}
