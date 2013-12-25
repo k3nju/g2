@@ -54,7 +54,7 @@ namespace g2
 	//-----------------------------------------------------------------------------------------//
 	void FileDescriptor::Open( const char *file, int flags, mode_t mode )
 		{
-		if( fd_  == -1)
+		if( fd_ != -1)
 			{
 			Close();
 			}
